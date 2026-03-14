@@ -1,138 +1,8 @@
 /**
  * Sqids Generator Tool
- * Uses the Sqids library (minified inline or simplified) to generate IDs from numbers.
- * https://sqids.org/
+ * Uses the Sqids library: https://sqids.org/
  */
 (function() {
-
-    // Minimal Sqids Implementation (Simplified from official JS source for portability)
-    class Sqids {
-        constructor(options = {}) {
-            this.alphabet = options.alphabet || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            this.minLength = options.minLength || 0;
-            this.blocklist = new Set(options.blocklist || []);
-
-            if (new Set(this.alphabet).size !== this.alphabet.length) {
-                throw new Error("Alphabet cannot contain duplicate characters");
-            }
-            if (this.alphabet.length < 3) {
-                throw new Error("Alphabet length must be at least 3");
-            }
-        }
-
-        encode(numbers) {
-            if (!numbers.length) {
-                return "";
-            }
-
-            const inNumbers = numbers.map((n) => {
-                if (typeof n !== "number" || n < 0 || Math.floor(n) !== n) {
-                   throw new Error(`Encoding input must be an array of non-negative integers. Got ${n}`);
-                }
-                return n;
-            });
-
-            return this.encodeNumbers(inNumbers);
-        }
-
-        decode(id) {
-            let ret = [];
-            if (!id) {
-                return ret;
-            }
-
-            let alphabet = this.alphabet;
-            const prefix = id.charAt(0);
-            const offset = alphabet.indexOf(prefix);
-
-            if (offset === -1) {
-                return [];
-            }
-
-            alphabet = alphabet.slice(offset) + alphabet.slice(0, offset);
-            alphabet = alphabet.slice(1).split("").reverse().join("");
-            let slicedId = id.slice(1);
-
-            while (slicedId.length > 0) {
-                const separator = alphabet.slice(0, 1);
-                const chunks = slicedId.split(separator);
-
-                if (chunks.length > 0) {
-                    const chunk = chunks[0];
-                    if (chunk === "") {
-                        break;
-                    }
-                    const num = this.toNumber(chunk, alphabet);
-                    ret.push(num);
-
-                    if (chunks.length > 1) {
-                        slicedId = chunks.slice(1).join(separator);
-                        alphabet = alphabet.slice(1) + alphabet.slice(0, 1);
-                    } else {
-                        slicedId = "";
-                    }
-                } else {
-                    break;
-                }
-            }
-            return ret;
-        }
-
-        encodeNumbers(numbers) {
-            let alphabet = this.alphabet;
-            let offset = numbers.reduce((a, v, i) => {
-                return this.alphabet[v % this.alphabet.length].codePointAt(0) + i + a;
-            }, numbers.length) % alphabet.length;
-
-            alphabet = alphabet.slice(offset) + alphabet.slice(0, offset);
-            let prefix = alphabet.charAt(0);
-            let ret = prefix;
-            alphabet = alphabet.slice(1).split("").reverse().join("");
-
-            for (let i = 0; i < numbers.length; i++) {
-                const num = numbers[i];
-                ret += this.toId(num, alphabet);
-
-                if (i < numbers.length - 1) {
-                     ret += alphabet.slice(0, 1);
-                     alphabet = alphabet.slice(1) + alphabet.slice(0, 1);
-                }
-            }
-
-            if (this.minLength > ret.length) {
-                ret += alphabet.slice(0, this.minLength - ret.length);
-            }
-
-            return ret;
-        }
-
-        toId(num, alphabet) {
-            let id = "";
-            let n = num;
-
-            if (n === 0) {
-                return alphabet[0];
-            }
-
-            while (n > 0) {
-                id = alphabet[n % alphabet.length] + id;
-                n = Math.floor(n / alphabet.length);
-            }
-            return id;
-        }
-
-        toNumber(id, alphabet) {
-            let number = 0;
-            for (const char of id) {
-                const idx = alphabet.indexOf(char);
-                if (idx === -1) return 0;
-                number = number * alphabet.length + idx;
-            }
-            return number;
-        }
-    }
-
-
     const sqidsTool = {
         id: 'sqids-generator',
         name: 'Sqids Generator',
@@ -156,8 +26,8 @@
                     <input type="text" id="sqids-alphabet" value="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" placeholder="Custom alphabet...">
                 </div>
 
-                <div style="display: flex; gap: 20px;">
-                    <div style="flex: 1;">
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
                         <h3>Encode (Numbers to ID)</h3>
                         <div class="input-group">
                             <label for="sqids-input-encode">Numbers (comma separated):</label>
@@ -167,7 +37,7 @@
                         <div id="sqids-result-encode" class="result-area" style="font-family: monospace; font-size: 1.2em; margin-top: 10px;"></div>
                     </div>
 
-                    <div style="flex: 1; border-left: 1px solid #ccc; padding-left: 20px;">
+                    <div style="flex: 1; min-width: 300px; border-left: 1px solid #eee; padding-left: 20px;">
                         <h3>Decode (ID to Numbers)</h3>
                          <div class="input-group">
                             <label for="sqids-input-decode">Sqid ID:</label>
@@ -193,8 +63,17 @@
 
         getSqidsInstance: function() {
             const alphabetInput = document.getElementById('sqids-alphabet').value;
-            const alphabet = alphabetInput || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new Sqids({ alphabet: alphabet });
+            const options = {};
+            if (alphabetInput) {
+                options.alphabet = alphabetInput;
+            }
+
+            // Check if library is loaded
+            if (typeof Sqids === 'undefined') {
+                throw new Error("Sqids library not loaded.");
+            }
+
+            return new Sqids(options);
         },
 
         handleEncode: function() {
@@ -214,7 +93,7 @@
                 if (trimmed === "") continue;
                 const n = parseInt(trimmed, 10);
                 if (isNaN(n) || n < 0) {
-                    resultDiv.innerText = \`Invalid input: "\${trimmed}" is not a non-negative integer.\`;
+                    resultDiv.innerText = `Invalid input: "${trimmed}" is not a non-negative integer.`;
                     return;
                 }
                 numbers.push(n);

@@ -2,6 +2,8 @@
 
 A collection of essential developer tools available as a simple, static website. The project is designed to be lightweight, fast, and easily extensible.
 
+> All the tools use popular libraries rather than reimplementing the functionality.
+
 ## 🚀 Features
 
 The toolbox currently includes the following utilities:
