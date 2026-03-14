@@ -1,5 +1,6 @@
 /**
  * UUID Generator Tool
+ * Uses the 'uuid' library: https://github.com/uuidjs/uuid
  */
 (function() {
     const uuidGenerator = {
@@ -17,7 +18,7 @@
                     <ul>
                         <li><a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" target="_blank">Wikipedia: UUID</a></li>
                         <li><a href="https://www.ietf.org/rfc/rfc4122.txt" target="_blank">RFC 4122 (Spec)</a></li>
-                        <li><a href="https://www.npmjs.com/package/uuid" target="_blank">NPM: uuid package</a></li>
+                        <li><a href="https://github.com/uuidjs/uuid" target="_blank">uuid (GitHub)</a></li>
                     </ul>
                 </div>
                 <hr>
@@ -26,86 +27,130 @@
                     <select id="uuid-version">
                         <option value="v4">Version 4 (Random) - Recommended</option>
                         <option value="v1">Version 1 (Timestamp-based)</option>
+                        <option value="v3">Version 3 (Namespace + MD5)</option>
+                        <option value="v5">Version 5 (Namespace + SHA-1)</option>
                         <option value="nil">Nil UUID (All zeros)</option>
                     </select>
                 </div>
+
+                <!-- Inputs for V3 and V5 -->
+                <div id="uuid-extra-inputs" style="display:none;">
+                    <div class="input-group">
+                        <label for="uuid-namespace-select">Namespace (UUID):</label>
+                        <select id="uuid-namespace-select">
+                            <option value="6ba7b810-9dad-11d1-80b4-00c04fd430c8">DNS</option>
+                            <option value="6ba7b811-9dad-11d1-80b4-00c04fd430c8">URL</option>
+                            <option value="6ba7b812-9dad-11d1-80b4-00c04fd430c8">OID</option>
+                            <option value="6ba7b814-9dad-11d1-80b4-00c04fd430c8">X500</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                        <input type="text" id="uuid-namespace-custom" placeholder="Enter custom Namespace UUID (e.g. 6ba7b810...)" style="display:none; margin-top: 5px;">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="uuid-name">Name (String):</label>
+                        <input type="text" id="uuid-name" placeholder="e.g. www.example.com">
+                    </div>
+                </div>
+
                 <button id="generate-uuid-btn">Generate UUID</button>
                 <div id="uuid-result" class="result-area" style="font-family: monospace;"></div>
 
                 <div style="margin-top: 20px; font-size: 0.9em; color: #666;">
-                    <p><strong>Version 4:</strong> Randomly generated. Most common use case.</p>
-                    <p><strong>Version 1:</strong> Generated using current time and node ID (MAC address). In this browser tool, the MAC address is randomized for privacy/security.</p>
-                    <p><strong>Nil:</strong> Special UUID with all bits set to zero.</p>
+                    <p><strong>Version 1:</strong> Generated from current time and MAC address (randomized in browser).</p>
+                    <p><strong>Version 3:</strong> Generated using MD5 hash of a namespace and name.</p>
+                    <p><strong>Version 4:</strong> Randomly generated.</p>
+                    <p><strong>Version 5:</strong> Generated using SHA-1 hash of a namespace and name (Preferred over v3).</p>
                 </div>
             `;
         },
+
         init: function() {
+            // Re-bind listeners when content is rendered
             const btn = document.getElementById('generate-uuid-btn');
             if (btn) {
-                btn.addEventListener('click', () => this.generate());
+                // Ensure we remove old listener if any (though init is usually called on fresh render)
+                // Just add new one
+                btn.onclick = () => this.generate();
+            }
+
+            const versionSelect = document.getElementById('uuid-version');
+            if (versionSelect) {
+                versionSelect.onchange = () => this.toggleInputs();
+            }
+
+            const namespaceSelect = document.getElementById('uuid-namespace-select');
+            if (namespaceSelect) {
+                namespaceSelect.onchange = () => {
+                    const customInput = document.getElementById('uuid-namespace-custom');
+                    if (namespaceSelect.value === 'custom') {
+                        customInput.style.display = 'block';
+                    } else {
+                        customInput.style.display = 'none';
+                    }
+                };
             }
         },
+
+        toggleInputs: function() {
+            const version = document.getElementById('uuid-version').value;
+            const extraInputs = document.getElementById('uuid-extra-inputs');
+
+            if (version === 'v3' || version === 'v5') {
+                extraInputs.style.display = 'block';
+            } else {
+                extraInputs.style.display = 'none';
+            }
+        },
+
         generate: function() {
             const version = document.getElementById('uuid-version').value;
-            let uuid = '';
-
-            if (version === 'v4') {
-                uuid = this.generateV4();
-            } else if (version === 'v1') {
-                uuid = this.generateV1();
-            } else if (version === 'nil') {
-                uuid = '00000000-0000-0000-0000-000000000000';
-            }
-
             const resultDiv = document.getElementById('uuid-result');
-            if(resultDiv) {
-                resultDiv.innerText = uuid;
+            let uuidVal = '';
+
+            try {
+                // Check if uuid library is loaded
+                // The CDN script exposes 'uuid' global object with v1, v3, v4, v5 functions
+                if (typeof uuid === 'undefined') {
+                    throw new Error("UUID library not loaded. Please check your internet connection.");
+                }
+
+                if (version === 'v4') {
+                    uuidVal = uuid.v4();
+                } else if (version === 'v1') {
+                    uuidVal = uuid.v1();
+                } else if (version === 'nil') {
+                     // uuid.NIL is available in recent versions, but fallback to string just in case
+                     uuidVal = uuid.NIL || '00000000-0000-0000-0000-000000000000';
+                } else if (version === 'v3' || version === 'v5') {
+                    const nsSelect = document.getElementById('uuid-namespace-select');
+                    const nsCustom = document.getElementById('uuid-namespace-custom');
+                    const nameInput = document.getElementById('uuid-name');
+
+                    let namespace = nsSelect.value === 'custom' ? nsCustom.value : nsSelect.value;
+                    let name = nameInput.value;
+
+                    if (!namespace) {
+                         resultDiv.innerText = "Please provide a Namespace UUID.";
+                         return;
+                    }
+                    if (!name) {
+                        resultDiv.innerText = "Please provide a Name.";
+                        return;
+                    }
+
+                    if (version === 'v3') {
+                        uuidVal = uuid.v3(name, namespace);
+                    } else {
+                        uuidVal = uuid.v5(name, namespace);
+                    }
+                }
+
+                resultDiv.innerText = uuidVal;
+
+            } catch (e) {
+                resultDiv.innerText = "Error: " + e.message;
             }
-        },
-
-        generateV4: function() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        },
-
-        // Simulating V1 UUID (Timestamp based)
-        generateV1: function() {
-            const now = new Date().getTime();
-            const offset = 122192928000000000; // 100ns intervals from 1582 to 1970
-
-            let uuidTime = (now * 10000) + offset;
-            uuidTime += Math.floor(Math.random() * 10000); // Simulate sub-ms precision
-
-            const timeLow = uuidTime & 0xFFFFFFFF;
-            // Shift operations in JS convert to 32-bit int, so we need to be careful with large numbers
-            // Standard division handles large doubles better for high bits
-            const timeMid = Math.floor(uuidTime / 0x100000000) & 0xFFFF;
-            const timeHiAndVersion = (Math.floor(uuidTime / 0x1000000000000) & 0x0FFF) | 0x1000;
-
-            const clockSeq = Math.floor(Math.random() * 0x3FFF);
-            const clockSeqHiAndReserved = (clockSeq >>> 8) | 0x80;
-            const clockSeqLow = clockSeq & 0xFF;
-
-            const node = [
-                Math.floor(Math.random() * 256) | 0x01,
-                Math.floor(Math.random() * 256),
-                Math.floor(Math.random() * 256),
-                Math.floor(Math.random() * 256),
-                Math.floor(Math.random() * 256),
-                Math.floor(Math.random() * 256)
-            ];
-
-            const hex = (num, len) => num.toString(16).padStart(len, '0');
-
-            return (
-                hex(timeLow, 8) + '-' +
-                hex(timeMid, 4) + '-' +
-                hex(timeHiAndVersion, 4) + '-' +
-                hex(clockSeqHiAndReserved, 2) + hex(clockSeqLow, 2) + '-' +
-                node.map(n => hex(n, 2)).join('')
-            );
         }
     };
 
