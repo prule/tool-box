@@ -8,16 +8,35 @@
         render: function() {
             return `
                 <h1>UUID Generator</h1>
+                <p>
+                    A <strong>Universally Unique Identifier (UUID)</strong> is a 128-bit label used for information in computer systems.
+                    They are globally unique, meaning the probability of duplicate UUIDs is virtually zero.
+                </p>
+                <div class="info-box">
+                    <strong>References:</strong>
+                    <ul>
+                        <li><a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" target="_blank">Wikipedia: UUID</a></li>
+                        <li><a href="https://www.ietf.org/rfc/rfc4122.txt" target="_blank">RFC 4122 (Spec)</a></li>
+                        <li><a href="https://www.npmjs.com/package/uuid" target="_blank">NPM: uuid package</a></li>
+                    </ul>
+                </div>
+                <hr>
                 <div class="input-group">
                     <label for="uuid-version">UUID Version:</label>
                     <select id="uuid-version">
-                        <option value="v4">Version 4 (Random)</option>
+                        <option value="v4">Version 4 (Random) - Recommended</option>
                         <option value="v1">Version 1 (Timestamp-based)</option>
-                        <option value="nil">Nil UUID</option>
+                        <option value="nil">Nil UUID (All zeros)</option>
                     </select>
                 </div>
                 <button id="generate-uuid-btn">Generate UUID</button>
                 <div id="uuid-result" class="result-area" style="font-family: monospace;"></div>
+
+                <div style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                    <p><strong>Version 4:</strong> Randomly generated. Most common use case.</p>
+                    <p><strong>Version 1:</strong> Generated using current time and node ID (MAC address). In this browser tool, the MAC address is randomized for privacy/security.</p>
+                    <p><strong>Nil:</strong> Special UUID with all bits set to zero.</p>
+                </div>
             `;
         },
         init: function() {
@@ -52,31 +71,23 @@
         },
 
         // Simulating V1 UUID (Timestamp based)
-        // Since JS doesn't have direct access to MAC address, we generate a random node ID
         generateV1: function() {
             const now = new Date().getTime();
-            // UUID time starts from Oct 15, 1582. JS starts from Jan 1, 1970.
-            // Difference in 100ns intervals
-            const offset = 122192928000000000;
+            const offset = 122192928000000000; // 100ns intervals from 1582 to 1970
 
-            // 1ms = 10,000 * 100ns
-            // Use high-precision timer if available, otherwise just standard date
             let uuidTime = (now * 10000) + offset;
-
-            // Add some simulated high-res time (0-9999) to make it unique within the millisecond
-            uuidTime += Math.floor(Math.random() * 10000);
+            uuidTime += Math.floor(Math.random() * 10000); // Simulate sub-ms precision
 
             const timeLow = uuidTime & 0xFFFFFFFF;
-            const timeMid = (uuidTime / 0x100000000) & 0xFFFF;
-            const timeHiAndVersion = ((uuidTime / 0x1000000000000) & 0x0FFF) | 0x1000; // Version 1
+            // Shift operations in JS convert to 32-bit int, so we need to be careful with large numbers
+            // Standard division handles large doubles better for high bits
+            const timeMid = Math.floor(uuidTime / 0x100000000) & 0xFFFF;
+            const timeHiAndVersion = (Math.floor(uuidTime / 0x1000000000000) & 0x0FFF) | 0x1000;
 
-            // Clock sequence (random for this implementation as we don't have persistent state)
             const clockSeq = Math.floor(Math.random() * 0x3FFF);
-            const clockSeqHiAndReserved = (clockSeq >>> 8) | 0x80; // Variant 1
+            const clockSeqHiAndReserved = (clockSeq >>> 8) | 0x80;
             const clockSeqLow = clockSeq & 0xFF;
 
-            // Node ID (Random 48-bit MAC replacement)
-            // Multicast bit set to 1 to avoid conflict with real MACs
             const node = [
                 Math.floor(Math.random() * 256) | 0x01,
                 Math.floor(Math.random() * 256),
@@ -98,7 +109,6 @@
         }
     };
 
-    // Register the tool
     if (window.toolboxApp) {
         window.toolboxApp.registerTool(uuidGenerator);
     }

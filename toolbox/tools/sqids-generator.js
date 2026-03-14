@@ -6,15 +6,12 @@
 (function() {
 
     // Minimal Sqids Implementation (Simplified from official JS source for portability)
-    // Supports: encode, decode
-    // Default Alphabet: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
     class Sqids {
         constructor(options = {}) {
             this.alphabet = options.alphabet || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             this.minLength = options.minLength || 0;
             this.blocklist = new Set(options.blocklist || []);
 
-            // Check alphabet validity
             if (new Set(this.alphabet).size !== this.alphabet.length) {
                 throw new Error("Alphabet cannot contain duplicate characters");
             }
@@ -49,7 +46,6 @@
             const offset = alphabet.indexOf(prefix);
 
             if (offset === -1) {
-                // If prefix not in alphabet (e.g. customized alphabet mismatch), return empty
                 return [];
             }
 
@@ -64,7 +60,6 @@
                 if (chunks.length > 0) {
                     const chunk = chunks[0];
                     if (chunk === "") {
-                        // Immediate separator? Should handle better in full impl but simplified here
                         break;
                     }
                     const num = this.toNumber(chunk, alphabet);
@@ -84,7 +79,6 @@
         }
 
         encodeNumbers(numbers) {
-            // "Shuffle" the alphabet based on the numbers to provide some randomness
             let alphabet = this.alphabet;
             let offset = numbers.reduce((a, v, i) => {
                 return this.alphabet[v % this.alphabet.length].codePointAt(0) + i + a;
@@ -97,12 +91,11 @@
 
             for (let i = 0; i < numbers.length; i++) {
                 const num = numbers[i];
-                // Base conversion
                 ret += this.toId(num, alphabet);
 
                 if (i < numbers.length - 1) {
-                     ret += alphabet.slice(0, 1); // Separator (simplified)
-                     alphabet = alphabet.slice(1) + alphabet.slice(0, 1); // Shuffle
+                     ret += alphabet.slice(0, 1);
+                     alphabet = alphabet.slice(1) + alphabet.slice(0, 1);
                 }
             }
 
@@ -132,7 +125,7 @@
             let number = 0;
             for (const char of id) {
                 const idx = alphabet.indexOf(char);
-                if (idx === -1) return 0; // Error in real impl
+                if (idx === -1) return 0;
                 number = number * alphabet.length + idx;
             }
             return number;
@@ -147,8 +140,17 @@
         render: function() {
             return `
                 <h1>Sqids Generator & Decoder</h1>
-                <p>Generate short unique IDs from numbers (see <a href="https://sqids.org" target="_blank">sqids.org</a>).</p>
-
+                <p>
+                    Sqids are short, unique, and reversible IDs generated from one or more numbers. They are great for creating YouTube-like IDs from database primary keys.
+                </p>
+                <div class="info-box">
+                    <strong>References:</strong>
+                    <ul>
+                        <li><a href="https://sqids.org/" target="_blank">Official Sqids Website</a></li>
+                        <li><a href="https://github.com/sqids/sqids-javascript" target="_blank">Official JavaScript Library</a></li>
+                    </ul>
+                </div>
+                <hr>
                 <div class="input-group">
                     <label for="sqids-alphabet">Alphabet (optional):</label>
                     <input type="text" id="sqids-alphabet" value="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" placeholder="Custom alphabet...">
@@ -191,7 +193,6 @@
 
         getSqidsInstance: function() {
             const alphabetInput = document.getElementById('sqids-alphabet').value;
-            // Default if empty
             const alphabet = alphabetInput || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new Sqids({ alphabet: alphabet });
         },
@@ -205,7 +206,6 @@
                 return;
             }
 
-            // Parse numbers: split by comma, trim, parse int
             const numberStrings = input.split(',');
             const numbers = [];
 
@@ -214,7 +214,7 @@
                 if (trimmed === "") continue;
                 const n = parseInt(trimmed, 10);
                 if (isNaN(n) || n < 0) {
-                    resultDiv.innerText = `Invalid input: "${trimmed}" is not a non-negative integer.`;
+                    resultDiv.innerText = \`Invalid input: "\${trimmed}" is not a non-negative integer.\`;
                     return;
                 }
                 numbers.push(n);
