@@ -11,6 +11,13 @@
                 <p>
                     Count characters, words, lines, and byte size (UTF-8) in your text.
                 </p>
+                <div class="info-box">
+                    <strong>Note:</strong>
+                    <ul>
+                        <li>Word count is based on splitting by whitespace.</li>
+                        <li>Byte size is calculated using UTF-8 encoding.</li>
+                    </ul>
+                </div>
                 <hr>
                 <div class="input-group">
                     <label for="counter-input">Input Text:</label>
