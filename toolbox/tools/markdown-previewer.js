@@ -47,7 +47,7 @@
             input.addEventListener('input', updatePreview);
 
             // Initial content for demonstration
-            input.value = "# Hello, Markdown!\\n\\nStart typing to see the magic...\\n\\n- Lists are easy\\n- **Bold** and *italic* text\\n- `Code snippets`";
+            input.value = "# Hello, Markdown!\n\nStart typing to see the magic...\n\n- Lists are easy\n- **Bold** and *italic* text\n- `Code snippets`";
             updatePreview();
         }
     };
