@@ -10,12 +10,8 @@
     <div class="container">
         <nav class="sidebar">
             <h2>Toolbox</h2>
-            <ul>
-                <li><a href="#" onclick="showTool('home')">Home</a></li>
-                <li><a href="#" onclick="showTool('uuid-generator')">UUID Generator</a></li>
-                <li><a href="#" onclick="showTool('timestamp-converter')">Timestamp Converter</a></li>
-                <li><a href="#" onclick="showTool('timezone-converter')">Timezone Converter</a></li>
-                <li><a href="#" onclick="showTool('squid-generator')">Squid Generator</a></li>
+            <ul id="tool-list">
+                <!-- Tool links will be dynamically added here -->
             </ul>
         </nav>
         <main class="content">
@@ -25,6 +21,14 @@
             </div>
         </main>
     </div>
-    <script src="script.js"></script>
+
+    <!-- Core Application Logic -->
+    <script src="app.js"></script>
+
+    <!-- Tool Scripts: Add new tools here -->
+    <script src="tools/uuid-generator.js"></script>
+    <script src="tools/timestamp-converter.js"></script>
+    <script src="tools/timezone-converter.js"></script>
+    <script src="tools/squid-generator.js"></script>
 </body>
 </html>

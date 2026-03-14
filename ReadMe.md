@@ -1,4 +1,4 @@
-This website contains a catalog of simple tools, each tool implemented separately and added to the side bar menu.
+This website contains a catalog of simple tools, each tool implemented as a separate file and added to the side bar menu.
 
 Examples of tools:
 
