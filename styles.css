@@ -110,7 +110,7 @@ label {
     color: #555;
 }
 
-input[type="text"], input[type="datetime-local"], select {
+input[type="text"], input[type="datetime-local"], select, textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 10px;
@@ -119,9 +119,10 @@ input[type="text"], input[type="datetime-local"], select {
     border-radius: var(--border-radius);
     font-size: 1rem;
     transition: border-color 0.2s;
+    font-family: inherit;
 }
 
-input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus {
+input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus, textarea:focus {
     border-color: var(--primary-color);
     outline: none;
 }
@@ -160,6 +161,13 @@ button:active {
     font-family: 'Consolas', 'Monaco', monospace;
     font-size: 1.1rem;
     color: #333;
+}
+
+.coder-area {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
 }
 
 hr {
