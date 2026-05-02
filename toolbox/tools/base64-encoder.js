@@ -1,5 +1,8 @@
 /**
- * Base64 Encoder/Decoder Tool
+ * Base64 Encoder/Decoder Tool (UI).
+ *
+ * Logic lives in toolbox/tools/base64-encoder.logic.js (window.base64EncoderLogic).
+ * Tested in tests/base64-encoder.test.js.
  */
 (function() {
     const base64Tool = {
@@ -35,40 +38,18 @@
         init: function() {
             const plainInput = document.getElementById('base64-plain');
             const encodedInput = document.getElementById('base64-encoded');
+            const logic = window.base64EncoderLogic;
 
-            plainInput.addEventListener('input', () => {
-                try {
-                    // btoa can fail on non-ASCII characters. A common workaround is to convert to UTF-8 bytes first.
-                    const utf8Bytes = new TextEncoder().encode(plainInput.value);
-                    const base64String = this.bytesToBase64(utf8Bytes);
-                    encodedInput.value = base64String;
-                } catch (e) {
-                    encodedInput.value = 'Error: ' + e.message;
-                }
+            plainInput.addEventListener('input', function () {
+                const r = logic.encode(plainInput.value);
+                encodedInput.value = r.ok ? r.base64 : 'Error: ' + r.error;
             });
 
-            encodedInput.addEventListener('input', () => {
-                try {
-                    const decodedBytes = this.base64ToBytes(encodedInput.value);
-                    plainInput.value = new TextDecoder().decode(decodedBytes);
-                } catch (e) {
-                    plainInput.value = 'Error: Invalid Base64 string';
-                }
+            encodedInput.addEventListener('input', function () {
+                const r = logic.decode(encodedInput.value);
+                plainInput.value = r.ok ? r.text : 'Error: ' + r.error;
             });
         },
-
-        // Helper functions to handle UTF-8 characters correctly
-        bytesToBase64: function(bytes) {
-            const binString = Array.from(bytes, (byte) =>
-                String.fromCodePoint(byte),
-            ).join("");
-            return btoa(binString);
-        },
-
-        base64ToBytes: function(base64) {
-            const binString = atob(base64);
-            return Uint8Array.from(binString, (m) => m.codePointAt(0));
-        }
     };
 
     if (window.toolboxApp) {
