@@ -1,7 +1,36 @@
 /**
- * Timezone Converter Tool
+ * Timezone Converter Tool (UI).
+ *
+ * The conversion logic lives in toolbox/tools/timezone-converter.logic.js
+ * and is exposed on `window.timezoneConverterLogic`. That same module is
+ * tested in tests/timezone-converter.test.js — keep this file thin so the
+ * tested logic stays the source of truth.
  */
 (function() {
+    // The full set of IANA zones offered by the tool. Used for both
+    // the "From" and "To" dropdowns so the converter is symmetric.
+    const ZONES = [
+        { value: 'UTC',                 label: 'UTC (Coordinated Universal Time)' },
+        { value: 'America/New_York',    label: 'New York (EST/EDT)' },
+        { value: 'America/Los_Angeles', label: 'Los Angeles (PST/PDT)' },
+        { value: 'Europe/London',       label: 'London (GMT/BST)' },
+        { value: 'Europe/Paris',        label: 'Paris (CET/CEST)' },
+        { value: 'Asia/Dubai',          label: 'Dubai (GST)' },
+        { value: 'Asia/Tokyo',          label: 'Tokyo (JST)' },
+        { value: 'Australia/Sydney',    label: 'Sydney (AEST/AEDT)' },
+    ];
+
+    function zoneOptionsHtml(includeLocal) {
+        const opts = [];
+        if (includeLocal) {
+            opts.push('<option value="Local">Local Device Time</option>');
+        }
+        for (const z of ZONES) {
+            opts.push(`<option value="${z.value}">${z.label}</option>`);
+        }
+        return opts.join('');
+    }
+
     const timezoneConverter = {
         id: 'timezone-converter',
         name: 'Timezone Converter',
@@ -22,26 +51,18 @@
                 <hr>
                 <div class="input-group">
                     <label for="tz-date">Date Time:</label>
-                    <input type="datetime-local" id="tz-date">
+                    <input type="datetime-local" id="tz-date" step="1">
                 </div>
                 <div class="input-group">
                     <label for="tz-from">From Timezone:</label>
                     <select id="tz-from">
-                        <option value="Local">Local Device Time</option>
-                        <option value="UTC">UTC (Coordinated Universal Time)</option>
+                        ${zoneOptionsHtml(true)}
                     </select>
                 </div>
-                 <div class="input-group">
+                <div class="input-group">
                     <label for="tz-to">To Timezone:</label>
                     <select id="tz-to">
-                        <option value="UTC">UTC</option>
-                        <option value="America/New_York">New York (EST/EDT)</option>
-                        <option value="Europe/London">London (GMT/BST)</option>
-                        <option value="Asia/Tokyo">Tokyo (JST)</option>
-                        <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
-                        <option value="Europe/Paris">Paris (CET/CEST)</option>
-                        <option value="Asia/Dubai">Dubai (GST)</option>
-                        <option value="America/Los_Angeles">Los Angeles (PST/PDT)</option>
+                        ${zoneOptionsHtml(true)}
                     </select>
                 </div>
                 <button id="convert-tz-btn">Convert</button>
@@ -55,53 +76,27 @@
             }
         },
         convert: function() {
-            const dateInput = document.getElementById('tz-date').value;
-             const fromZone = document.getElementById('tz-from').value;
-             const toZone = document.getElementById('tz-to').value;
-             const resultDiv = document.getElementById('tz-result');
+            const input = document.getElementById('tz-date').value;
+            const fromZone = document.getElementById('tz-from').value;
+            const toZone = document.getElementById('tz-to').value;
+            const resultDiv = document.getElementById('tz-result');
 
-             if (!dateInput) {
-                resultDiv.innerText = "Please select a date.";
+            const logic = window.timezoneConverterLogic;
+            if (!logic) {
+                resultDiv.innerText = 'Internal error: timezone logic module not loaded.';
                 return;
-             }
+            }
 
-             try {
-                 let dateObj;
+            const result = logic.convertTimezone({ input, fromZone, toZone });
+            if (!result.ok) {
+                resultDiv.innerText = result.error;
+                return;
+            }
 
-                 // Note: datetime-local inputs do not have timezone info.
-                 // We construct a date object treating the input as if it belongs to 'fromZone'
-
-                 if (fromZone === 'UTC') {
-                     // Treat input as UTC: append 'Z'
-                     dateObj = new Date(dateInput + 'Z');
-                 } else {
-                     // Treat input as Local System Time (default Date behavior)
-                     dateObj = new Date(dateInput);
-                 }
-
-                 if (isNaN(dateObj.getTime())) {
-                     resultDiv.innerText = "Invalid Date input.";
-                     return;
-                 }
-
-                 const options = {
-                    timeZone: toZone,
-                    year: 'numeric', month: 'long', day: 'numeric',
-                    hour: 'numeric', minute: 'numeric', second: 'numeric',
-                    timeZoneName: 'long'
-                };
-
-                const formatter = new Intl.DateTimeFormat('en-US', options);
-                const formattedDate = formatter.format(dateObj);
-
-                resultDiv.innerHTML = `
-                    <strong>Original (${fromZone}):</strong> ${dateObj.toLocaleString()}<br>
-                    <strong>Converted (${toZone}):</strong> ${formattedDate}
-                `;
-
-             } catch (e) {
-                 resultDiv.innerText = "Error converting timezone: " + e.message;
-             }
+            resultDiv.innerHTML = `
+                <strong>Original (${result.fromZoneResolved}):</strong> ${result.originalFormatted}<br>
+                <strong>Converted (${result.toZoneResolved}):</strong> ${result.convertedFormatted}
+            `;
         }
     };
 

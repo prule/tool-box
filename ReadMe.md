@@ -20,7 +20,8 @@ The project is built with vanilla HTML, CSS, and JavaScript, following a simple 
 *   **`index.html`**: The main entry point that loads the core application logic and individual tool scripts.
 *   **`styles.css`**: Contains all the styling for the application, using modern CSS variables and a responsive layout.
 *   **`toolbox/app.js`**: The core application logic. It handles the sidebar navigation and tool registration system.
-*   **`toolbox/tools/`**: A directory where each tool resides in its own isolated JavaScript file.
+*   **`toolbox/tools/`**: A directory where each tool resides in its own isolated JavaScript file. Tools whose conversion logic is non-trivial are split into a `<tool>.logic.js` file (pure functions, classic script attaching to `window`) plus a `<tool>.js` file (UI/DOM glue). Pure logic is what we test.
+*   **`tests/`**: Vitest test suites. Each `<tool>.logic.js` should have a paired `<tool>.test.js`.
 
 ## 💻 Usage
 
@@ -69,7 +70,37 @@ Adding a new tool is straightforward:
     <script src="toolbox/tools/my-new-tool.js"></script>
     ```
 
+4.  **Add tests** if your tool has non-trivial pure logic — see the [Testing](#-testing) section. The convention is to extract logic to `toolbox/tools/my-new-tool.logic.js` and pair it with `tests/my-new-tool.test.js`.
+
 That's it! The tool will automatically appear in the sidebar.
+
+## 🧪 Testing
+
+The project uses [Vitest](https://vitest.dev/) for unit tests. The site itself remains a static, build-free HTML/JS app — Node and Vitest are only used during development.
+
+Install dev dependencies once:
+
+```bash
+npm install
+```
+
+Run the test suite:
+
+```bash
+npm test          # one-shot run
+npm run test:watch  # watch mode
+```
+
+Tests live in `tests/` and import logic from `toolbox/tools/<tool>.logic.js`. The logic files are written as classic browser scripts (no `import`/`export`) so they load with a plain `<script>` tag in the browser; the test harness evaluates each logic file against a fake `window` to capture its API. This keeps the same code under test and in production.
+
+When adding a new tool that has any non-trivial pure logic, follow this pattern:
+
+1.  Put pure functions in `toolbox/tools/<tool>.logic.js`. Attach the public API to `window.<tool>Logic` from inside an IIFE.
+2.  Keep `toolbox/tools/<tool>.js` thin — it should just call into the logic module from event handlers.
+3.  Register both files in `index.html`, with the `.logic.js` script loaded **before** the UI script.
+4.  Add `tests/<tool>.test.js` with focused tests for every logic function plus the high-level entry point.
+
+Per the project rule, **documentation, tests, and code must stay in sync** — when you change a tool's behavior, update its tests and any relevant docs in the same change.
 
 ## 📚 Dependencies
 
