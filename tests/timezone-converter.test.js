@@ -233,6 +233,20 @@ describe('convertTimezone', () => {
         expect(r.convertedFormatted).toMatch(/PM/);
     });
 
+    it('converts UTC to AEDT during daylight savings', () => {
+        // 2024-07-15 12:00 London (BST = UTC+1) = 2024-07-15 11:00 UTC = 2024-07-15 20:00 Tokyo
+        const r = convertTimezone({
+            input: '2026-03-31T13:00',
+            fromZone: 'UTC',
+            toZone: 'Australia/Sydney',
+        });
+        expect(r.ok).toBe(true);
+        expect(r.instant.toISOString()).toBe('2026-03-31T13:00:00.000Z');
+        expect(r.convertedFormatted).toMatch(/April 1, 2026/);
+        expect(r.convertedFormatted).toMatch(/00:00/);
+        expect(r.convertedFormatted).toMatch(/AM/);
+    });
+
     it('formats the original time in the source zone, not the runtime local zone', () => {
         // This is the bug the previous implementation had: it called
         // dateObj.toLocaleString() (always runtime-local) regardless of fromZone.
