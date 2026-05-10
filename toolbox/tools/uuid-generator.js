@@ -1,6 +1,11 @@
 /**
- * UUID Generator Tool
- * Uses the 'uuid' library: https://github.com/uuidjs/uuid
+ * UUID Generator Tool (UI).
+ *
+ * Uses the 'uuid' library (loaded from CDN in index.html):
+ * https://github.com/uuidjs/uuid
+ *
+ * Logic lives in toolbox/tools/uuid-generator.logic.js
+ * (window.uuidGeneratorLogic). Tested in tests/uuid-generator.test.js.
  */
 (function() {
     const uuidGenerator = {
@@ -106,51 +111,22 @@
         generate: function() {
             const version = document.getElementById('uuid-version').value;
             const resultDiv = document.getElementById('uuid-result');
-            let uuidVal = '';
 
-            try {
-                // Check if uuid library is loaded
-                // The CDN script exposes 'uuid' global object with v1, v3, v4, v5 functions
-                if (typeof uuid === 'undefined') {
-                    throw new Error("UUID library not loaded. Please check your internet connection.");
-                }
-
-                if (version === 'v4') {
-                    uuidVal = uuid.v4();
-                } else if (version === 'v1') {
-                    uuidVal = uuid.v1();
-                } else if (version === 'nil') {
-                     // uuid.NIL is available in recent versions, but fallback to string just in case
-                     uuidVal = uuid.NIL || '00000000-0000-0000-0000-000000000000';
-                } else if (version === 'v3' || version === 'v5') {
-                    const nsSelect = document.getElementById('uuid-namespace-select');
-                    const nsCustom = document.getElementById('uuid-namespace-custom');
-                    const nameInput = document.getElementById('uuid-name');
-
-                    let namespace = nsSelect.value === 'custom' ? nsCustom.value : nsSelect.value;
-                    let name = nameInput.value;
-
-                    if (!namespace) {
-                         resultDiv.innerText = "Please provide a Namespace UUID.";
-                         return;
-                    }
-                    if (!name) {
-                        resultDiv.innerText = "Please provide a Name.";
-                        return;
-                    }
-
-                    if (version === 'v3') {
-                        uuidVal = uuid.v3(name, namespace);
-                    } else {
-                        uuidVal = uuid.v5(name, namespace);
-                    }
-                }
-
-                resultDiv.innerText = uuidVal;
-
-            } catch (e) {
-                resultDiv.innerText = "Error: " + e.message;
+            let namespace, name;
+            if (version === 'v3' || version === 'v5') {
+                const nsSelect = document.getElementById('uuid-namespace-select');
+                const nsCustom = document.getElementById('uuid-namespace-custom');
+                const nameInput = document.getElementById('uuid-name');
+                namespace = nsSelect.value === 'custom' ? nsCustom.value : nsSelect.value;
+                name = nameInput.value;
             }
+
+            const uuidLib = typeof uuid !== 'undefined' ? uuid : null;
+            const r = window.uuidGeneratorLogic.generate(
+                { version: version, namespace: namespace, name: name },
+                uuidLib,
+            );
+            resultDiv.innerText = r.ok ? r.uuid : r.error;
         }
     };
 
