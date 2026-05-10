@@ -1,5 +1,8 @@
 /**
- * Case Converter Tool
+ * Case Converter Tool (UI).
+ *
+ * Logic lives in toolbox/tools/case-converter.logic.js (window.caseConverterLogic).
+ * Tested in tests/case-converter.test.js.
  */
 (function() {
     const caseConverterTool = {
@@ -42,61 +45,23 @@
             `;
         },
         init: function() {
-            // Re-select elements inside init because render replaces them
             const input = document.getElementById('case-input');
             const output = document.getElementById('case-output');
             const buttonContainer = document.getElementById('case-buttons');
+            const logic = window.caseConverterLogic;
 
             if (buttonContainer) {
                 buttonContainer.addEventListener('click', (e) => {
                     if (e.target.tagName === 'BUTTON') {
                         const caseType = e.target.getAttribute('data-case');
                         const text = input.value;
-                        if(text) {
-                            output.value = this.convert(text, caseType);
+                        if (text) {
+                            output.value = logic.convert(text, caseType);
                         } else {
                             output.value = "";
                         }
                     }
                 });
-            }
-        },
-
-        // Simple word splitter that handles camelCase, snake_case, etc.
-        getWords: function(str) {
-            // Split by space, underscore, dash, or camelCase boundaries
-            return str
-                .replace(/([a-z])([A-Z])/g, '$1 $2') // split camelCase
-                .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // split acronyms
-                .replace(/[_\-]+/g, ' ') // replace separators with space
-                .split(/\s+/)
-                .filter(w => w.length > 0);
-        },
-
-        convert: function(text, caseType) {
-            const words = this.getWords(text);
-
-            switch (caseType) {
-                case 'camel':
-                    return words.map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
-                case 'pascal':
-                    return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
-                case 'snake':
-                    return words.map(w => w.toLowerCase()).join('_');
-                case 'kebab':
-                    return words.map(w => w.toLowerCase()).join('-');
-                case 'constant':
-                    return words.map(w => w.toUpperCase()).join('_');
-                case 'upper':
-                    return text.toUpperCase();
-                case 'lower':
-                    return text.toLowerCase();
-                case 'sentence':
-                    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-                case 'title':
-                    return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
-                default:
-                    return text;
             }
         }
     };
