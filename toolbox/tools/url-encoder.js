@@ -1,5 +1,8 @@
 /**
- * URL Encoder/Decoder Tool
+ * URL Encoder/Decoder Tool (UI).
+ *
+ * Logic lives in toolbox/tools/url-encoder.logic.js (window.urlEncoderLogic).
+ * Tested in tests/url-encoder.test.js.
  */
 (function() {
     const urlEncoderTool = {
@@ -35,21 +38,16 @@
         init: function() {
             const plainInput = document.getElementById('url-plain');
             const encodedInput = document.getElementById('url-encoded');
+            const logic = window.urlEncoderLogic;
 
             plainInput.addEventListener('input', () => {
-                try {
-                    encodedInput.value = encodeURIComponent(plainInput.value);
-                } catch (e) {
-                    encodedInput.value = 'Error: ' + e.message;
-                }
+                const r = logic.encode(plainInput.value);
+                encodedInput.value = r.ok ? r.encoded : 'Error: ' + r.error;
             });
 
             encodedInput.addEventListener('input', () => {
-                try {
-                    plainInput.value = decodeURIComponent(encodedInput.value);
-                } catch (e) {
-                    plainInput.value = 'Error: Invalid URL encoded string';
-                }
+                const r = logic.decode(encodedInput.value);
+                plainInput.value = r.ok ? r.text : 'Error: ' + r.error;
             });
         }
     };
