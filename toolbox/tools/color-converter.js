@@ -1,5 +1,8 @@
 /**
- * Color Converter Tool
+ * Color Converter Tool (UI).
+ *
+ * Logic lives in toolbox/tools/color-converter.logic.js
+ * (window.colorConverterLogic). Tested in tests/color-converter.test.js.
  */
 (function() {
     const colorConverterTool = {
@@ -83,24 +86,38 @@
                 return;
             }
 
-            const updateColors = (color) => {
-                const tc = tinycolor(color);
-                if (!tc.isValid()) return;
-
-                picker.value = tc.toHexString();
-                hexInput.value = tc.toHexString();
-                rgbInput.value = tc.toRgbString();
-                hslInput.value = tc.toHslString();
-                hsvInput.value = tc.toHsvString();
+            // Skip the source field so we don't overwrite what the user is
+            // typing (TinyColor canonicalises e.g. "#abc" → "#aabbcc",
+            // which moves the cursor and breaks further input).
+            const updateColors = (input, source) => {
+                const r = window.colorConverterLogic.convert(input, tinycolor);
+                if (!r.ok) return;
+                picker.value = r.hex;
+                if (source !== hexInput) hexInput.value = r.hex;
+                if (source !== rgbInput) rgbInput.value = r.rgb;
+                if (source !== hslInput) hslInput.value = r.hsl;
+                if (source !== hsvInput) hsvInput.value = r.hsv;
             };
 
-            picker.addEventListener('input', () => updateColors(picker.value));
-            hexInput.addEventListener('input', () => updateColors(hexInput.value));
-            rgbInput.addEventListener('input', () => updateColors(rgbInput.value));
-            hslInput.addEventListener('input', () => updateColors(hslInput.value));
-            hsvInput.addEventListener('input', () => updateColors(hsvInput.value));
+            picker.addEventListener('input', () => updateColors(picker.value, picker));
+            hexInput.addEventListener('input', () => updateColors(hexInput.value, hexInput));
+            rgbInput.addEventListener('input', () => updateColors(rgbInput.value, rgbInput));
+            hslInput.addEventListener('input', () => updateColors(hslInput.value, hslInput));
+            hsvInput.addEventListener('input', () => updateColors(hsvInput.value, hsvInput));
 
-            // Initial color
+            // Normalise the source field on blur so the canonical form
+            // ends up there once the user is done typing.
+            const normaliseOnBlur = (field, key) => {
+                field.addEventListener('blur', () => {
+                    const r = window.colorConverterLogic.convert(field.value, tinycolor);
+                    if (r.ok) field.value = r[key];
+                });
+            };
+            normaliseOnBlur(hexInput, 'hex');
+            normaliseOnBlur(rgbInput, 'rgb');
+            normaliseOnBlur(hslInput, 'hsl');
+            normaliseOnBlur(hsvInput, 'hsv');
+
             updateColors('#4a90e2');
         }
     };
