@@ -1,5 +1,8 @@
 /**
- * JWT (JSON Web Token) Decoder Tool
+ * JWT (JSON Web Token) Decoder Tool (UI).
+ *
+ * Logic lives in toolbox/tools/jwt-decoder.logic.js
+ * (window.jwtDecoderLogic). Tested in tests/jwt-decoder.test.js.
  */
 (function() {
     const jwtDecoderTool = {
@@ -43,21 +46,14 @@
             const headerDiv = document.getElementById('jwt-header');
             const payloadDiv = document.getElementById('jwt-payload');
 
-            try {
-                const [header, payload, signature] = token.split('.');
-                if (!header || !payload) {
-                    headerDiv.innerText = '';
-                    payloadDiv.innerText = '';
-                    return;
-                }
-
-                const decodedHeader = JSON.parse(atob(header.replace(/-/g, '+').replace(/_/g, '/')));
-                const decodedPayload = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-
-                headerDiv.innerText = JSON.stringify(decodedHeader, null, 2);
-                payloadDiv.innerText = JSON.stringify(decodedPayload, null, 2);
-
-            } catch (e) {
+            const r = window.jwtDecoderLogic.decode(token);
+            if (r.ok) {
+                headerDiv.innerText = JSON.stringify(r.header, null, 2);
+                payloadDiv.innerText = JSON.stringify(r.payload, null, 2);
+            } else if (r.reason === 'empty' || r.reason === 'incomplete') {
+                headerDiv.innerText = '';
+                payloadDiv.innerText = '';
+            } else {
                 headerDiv.innerText = 'Invalid JWT Header';
                 payloadDiv.innerText = 'Invalid JWT Payload';
             }
