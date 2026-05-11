@@ -1,6 +1,11 @@
 /**
- * Sqids Generator Tool
- * Uses the Sqids library: https://sqids.org/
+ * Sqids Generator Tool (UI).
+ *
+ * Uses the Sqids library (loaded from CDN in index.html):
+ * https://sqids.org/
+ *
+ * Logic lives in toolbox/tools/sqids-generator.logic.js
+ * (window.sqidsGeneratorLogic). Tested in tests/sqids-generator.test.js.
  */
 (function() {
     const sqidsTool = {
@@ -61,74 +66,25 @@
             }
         },
 
-        getSqidsInstance: function() {
-            const alphabetInput = document.getElementById('sqids-alphabet').value;
-            const options = {};
-            if (alphabetInput) {
-                options.alphabet = alphabetInput;
-            }
-
-            // Check if library is loaded
-            if (typeof Sqids === 'undefined') {
-                throw new Error("Sqids library not loaded.");
-            }
-
-            return new Sqids(options);
+        getOptions: function() {
+            const alphabet = document.getElementById('sqids-alphabet').value;
+            return alphabet ? { alphabet: alphabet } : {};
         },
 
         handleEncode: function() {
             const input = document.getElementById('sqids-input-encode').value;
             const resultDiv = document.getElementById('sqids-result-encode');
-
-            if (!input) {
-                resultDiv.innerText = "Please enter some numbers.";
-                return;
-            }
-
-            const numberStrings = input.split(',');
-            const numbers = [];
-
-            for (const s of numberStrings) {
-                const trimmed = s.trim();
-                if (trimmed === "") continue;
-                const n = parseInt(trimmed, 10);
-                if (isNaN(n) || n < 0) {
-                    resultDiv.innerText = `Invalid input: "${trimmed}" is not a non-negative integer.`;
-                    return;
-                }
-                numbers.push(n);
-            }
-
-            if (numbers.length === 0) {
-                 resultDiv.innerText = "Please enter at least one number.";
-                 return;
-            }
-
-            try {
-                const sqids = this.getSqidsInstance();
-                const id = sqids.encode(numbers);
-                resultDiv.innerText = id;
-            } catch (e) {
-                resultDiv.innerText = "Error: " + e.message;
-            }
+            const SqidsLib = typeof Sqids !== 'undefined' ? Sqids : null;
+            const r = window.sqidsGeneratorLogic.encode(input, this.getOptions(), SqidsLib);
+            resultDiv.innerText = r.ok ? r.id : r.error;
         },
 
         handleDecode: function() {
             const input = document.getElementById('sqids-input-decode').value;
             const resultDiv = document.getElementById('sqids-result-decode');
-
-            if (!input) {
-                resultDiv.innerText = "Please enter an ID.";
-                return;
-            }
-
-            try {
-                const sqids = this.getSqidsInstance();
-                const numbers = sqids.decode(input);
-                resultDiv.innerText = numbers.join(', ');
-            } catch (e) {
-                resultDiv.innerText = "Error: " + e.message;
-            }
+            const SqidsLib = typeof Sqids !== 'undefined' ? Sqids : null;
+            const r = window.sqidsGeneratorLogic.decode(input, this.getOptions(), SqidsLib);
+            resultDiv.innerText = r.ok ? r.numbers.join(', ') : r.error;
         }
     };
 
