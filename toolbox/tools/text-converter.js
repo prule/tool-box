@@ -1,5 +1,8 @@
 /**
- * Text <-> Hex <-> Binary Converter Tool
+ * Text <-> Hex <-> Binary Converter Tool (UI).
+ *
+ * Logic lives in toolbox/tools/text-converter.logic.js
+ * (window.textConverterLogic). Tested in tests/text-converter.test.js.
  */
 (function() {
     const textConverterTool = {
@@ -41,94 +44,35 @@
             const textInput = document.getElementById('conv-text');
             const hexInput = document.getElementById('conv-hex');
             const binaryInput = document.getElementById('conv-binary');
+            const logic = window.textConverterLogic;
 
-            const encoder = new TextEncoder();
-            const decoder = new TextDecoder();
-
-            // --- Convert from Text ---
             textInput.addEventListener('input', () => {
-                try {
-                    const text = textInput.value;
-                    const bytes = encoder.encode(text);
-
-                    // To Hex
-                    hexInput.value = Array.from(bytes)
-                        .map(b => b.toString(16).padStart(2, '0'))
-                        .join(' ');
-
-                    // To Binary
-                    binaryInput.value = Array.from(bytes)
-                        .map(b => b.toString(2).padStart(8, '0'))
-                        .join(' ');
-                } catch (e) {
-                    console.error(e);
-                }
+                const r = logic.fromText(textInput.value);
+                hexInput.value = r.hex;
+                binaryInput.value = r.binary;
             });
 
-            // --- Convert from Hex ---
             hexInput.addEventListener('input', () => {
-                try {
-                    // Remove whitespace and non-hex chars to clean input, then split by 2 chars or use spaces
-                    let raw = hexInput.value.trim();
-                    if (!raw) {
-                        textInput.value = '';
-                        binaryInput.value = '';
-                        return;
-                    }
-
-                    // Flexible parsing: handle space-separated or continuous hex
-                    let byteStrings = [];
-                    if (raw.includes(' ')) {
-                        byteStrings = raw.split(/\s+/);
-                    } else {
-                        byteStrings = raw.match(/.{1,2}/g) || [];
-                    }
-
-                    const bytes = new Uint8Array(byteStrings.map(h => parseInt(h, 16)));
-
-                    // To Text
-                    textInput.value = decoder.decode(bytes);
-
-                    // To Binary
-                    binaryInput.value = Array.from(bytes)
-                        .map(b => b.toString(2).padStart(8, '0'))
-                        .join(' ');
-
-                } catch (e) {
-                    // invalid hex, ignore or show error state if desired
+                const r = logic.fromHex(hexInput.value);
+                if (r.ok) {
+                    textInput.value = r.text;
+                    binaryInput.value = r.binary;
+                } else if (r.reason === 'empty') {
+                    textInput.value = '';
+                    binaryInput.value = '';
                 }
+                // Invalid input: silently leave the other fields as-is (matches
+                // the original tool's behaviour).
             });
 
-            // --- Convert from Binary ---
             binaryInput.addEventListener('input', () => {
-                try {
-                    let raw = binaryInput.value.trim();
-                    if (!raw) {
-                        textInput.value = '';
-                        hexInput.value = '';
-                        return;
-                    }
-
-                    // Flexible parsing: handle space-separated or continuous 8-bit blocks
-                    let byteStrings = [];
-                    if (raw.includes(' ')) {
-                        byteStrings = raw.split(/\s+/);
-                    } else {
-                        byteStrings = raw.match(/.{1,8}/g) || [];
-                    }
-
-                    const bytes = new Uint8Array(byteStrings.map(b => parseInt(b, 2)));
-
-                    // To Text
-                    textInput.value = decoder.decode(bytes);
-
-                    // To Hex
-                    hexInput.value = Array.from(bytes)
-                        .map(b => b.toString(16).padStart(2, '0'))
-                        .join(' ');
-
-                } catch (e) {
-                    // invalid binary
+                const r = logic.fromBinary(binaryInput.value);
+                if (r.ok) {
+                    textInput.value = r.text;
+                    hexInput.value = r.hex;
+                } else if (r.reason === 'empty') {
+                    textInput.value = '';
+                    hexInput.value = '';
                 }
             });
         }
