@@ -1,5 +1,8 @@
 /**
- * Character & Word Counter Tool
+ * Character & Word Counter Tool (UI).
+ *
+ * Logic lives in toolbox/tools/counter.logic.js (window.counterLogic).
+ * Tested in tests/counter.test.js.
  */
 (function() {
     const counterTool = {
@@ -81,29 +84,11 @@
             const countBytes = document.getElementById('count-bytes');
 
             const updateCounts = () => {
-                const text = input.value;
-                if (!text) {
-                     countChars.innerText = '0';
-                     countWords.innerText = '0';
-                     countLines.innerText = '0';
-                     countBytes.innerText = '0';
-                     return;
-                }
-
-                // Characters
-                countChars.innerText = text.length.toLocaleString();
-
-                // Words (split by whitespace)
-                const words = text.trim().split(/\s+/);
-                countWords.innerText = text.trim() === '' ? 0 : words.length.toLocaleString();
-
-                // Lines
-                const lines = text.split(/\r\n|\r|\n/);
-                countLines.innerText = lines.length.toLocaleString();
-
-                // Bytes (UTF-8)
-                const bytes = new TextEncoder().encode(text).length;
-                countBytes.innerText = bytes.toLocaleString();
+                const c = window.counterLogic.count(input.value);
+                countChars.innerText = c.chars.toLocaleString();
+                countWords.innerText = c.words.toLocaleString();
+                countLines.innerText = c.lines.toLocaleString();
+                countBytes.innerText = c.bytes.toLocaleString();
             };
 
             input.addEventListener('input', updateCounts);
