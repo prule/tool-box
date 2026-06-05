@@ -1,5 +1,8 @@
 /**
- * JSON Formatter & Validator Tool
+ * JSON Formatter & Validator Tool (UI).
+ *
+ * Logic lives in toolbox/tools/json-formatter.logic.js
+ * (window.jsonFormatterLogic). Tested in tests/json-formatter.test.js.
  */
 (function() {
     const jsonFormatterTool = {
@@ -41,43 +44,24 @@
             const formatBtn = document.getElementById('format-json-btn');
             const compactBtn = document.getElementById('compact-json-btn');
 
-            formatBtn.addEventListener('click', () => {
-                try {
-                    const value = input.value;
-                    if (!value) {
-                         output.value = "";
-                         status.innerText = "";
-                         return;
-                    }
-                    const parsed = JSON.parse(value);
-                    output.value = JSON.stringify(parsed, null, 4); // 4 spaces indentation
-                    status.innerText = "Valid JSON";
-                    status.style.color = "green";
-                } catch (e) {
-                    output.value = "";
-                    status.innerText = "Invalid JSON: " + e.message;
-                    status.style.color = "red";
+            const apply = (fn) => {
+                const r = fn(input.value);
+                if (r.ok) {
+                    output.value = r.output;
+                    status.innerText = 'Valid JSON';
+                    status.style.color = 'green';
+                } else if (r.reason === 'empty') {
+                    output.value = '';
+                    status.innerText = '';
+                } else {
+                    output.value = '';
+                    status.innerText = r.message;
+                    status.style.color = 'red';
                 }
-            });
+            };
 
-            compactBtn.addEventListener('click', () => {
-                try {
-                    const value = input.value;
-                    if (!value) {
-                         output.value = "";
-                         status.innerText = "";
-                         return;
-                    }
-                    const parsed = JSON.parse(value);
-                    output.value = JSON.stringify(parsed);
-                    status.innerText = "Valid JSON";
-                    status.style.color = "green";
-                } catch (e) {
-                    output.value = "";
-                    status.innerText = "Invalid JSON: " + e.message;
-                    status.style.color = "red";
-                }
-            });
+            formatBtn.addEventListener('click', () => apply(window.jsonFormatterLogic.format));
+            compactBtn.addEventListener('click', () => apply(window.jsonFormatterLogic.compact));
         }
     };
 
