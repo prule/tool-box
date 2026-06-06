@@ -27,28 +27,6 @@
                     <textarea id="hash-input" class="coder-area" rows="4" placeholder="Type text to hash..."></textarea>
                 </div>
 
-                <style>
-                    .hash-row {
-                        display: flex;
-                        align-items: center;
-                        margin-bottom: 15px;
-                    }
-                    .hash-label {
-                        width: 100px;
-                        font-weight: bold;
-                        flex-shrink: 0;
-                    }
-                    .hash-value {
-                        flex-grow: 1;
-                        font-family: monospace;
-                        background: #f8f9fa;
-                        padding: 10px;
-                        border: 1px solid #ddd;
-                        border-radius: 4px;
-                        word-break: break-all;
-                    }
-                </style>
-
                 <div id="hash-results">
                     <div class="hash-row">
                         <div class="hash-label">MD5</div>

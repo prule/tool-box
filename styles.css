@@ -208,6 +208,103 @@ hr {
     text-decoration: underline;
 }
 
+/* Secondary / muted variant used by the Case Converter for non-identifier
+   cases (UPPER / lower / Sentence / Title). */
+button.btn-secondary {
+    background-color: #6c757d;
+}
+button.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* ----- Tool-specific styles -----
+   Previously these lived inside <style> blocks returned from each tool's
+   render() function. Consolidating here so they ship once and so the rules
+   are visible alongside the rest of the design system. */
+
+/* Case Converter: row of case-style buttons. */
+.case-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Color Converter: picker + values grid. */
+.color-io-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 20px;
+    align-items: center;
+}
+.color-picker-wrapper {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+#color-picker {
+    width: 200%;
+    height: 200%;
+    transform: translate(-25%, -25%);
+    cursor: pointer;
+}
+.color-values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+/* Text Counter: four stat tiles. */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.stat-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+.stat-label {
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Hash Generator: aligned label + value rows. */
+.hash-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.hash-label {
+    width: 100px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+.hash-value {
+    flex-grow: 1;
+    font-family: monospace;
+    background: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    word-break: break-all;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .container {

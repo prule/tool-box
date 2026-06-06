@@ -9,14 +9,6 @@ A running backlog of known issues and clean-ups. Per `CLAUDE.md`:
 
 ## Open
 
-### Inline `<style>` blocks inside tool `render()` strings
-`case-converter`, `counter`, `hash-generator`, and `color-converter` each
-embed a `<style>` block inside the HTML they return from `render()`. Each
-gets re-injected every time the tool is shown, mixes concerns, and is
-harder to override consistently. Move tool-specific styles into
-`styles.css` (or, if we want isolation, per-tool CSS files referenced from
-`index.html`).
-
 ### No CI
 Tests only run when someone remembers `npm test` locally. A GitHub Actions
 workflow that runs `npm install && npm test` on every PR would prevent
@@ -40,6 +32,15 @@ reference the deleted `script.js`. Harmless, but if someone opens an old
 config, it will be broken.
 
 ## DONE
+
+### Consolidate tool-specific CSS into `styles.css`
+`color-converter`, `counter`, and `hash-generator` each used to embed a
+`<style>` block inside the HTML returned from `render()`, and
+`case-converter` reached for inline `style="..."` attributes for its
+button row + secondary-button colour. All of it now lives in
+`styles.css` under a "Tool-specific styles" section, plus a reusable
+`button.btn-secondary` class for muted buttons. The styles ship once
+instead of being re-injected on every tool switch.
 
 ### Extract pure logic from every tool and back it with tests
 Every tool now has a paired `<tool>.logic.js` (pure functions on a
