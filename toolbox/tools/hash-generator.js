@@ -1,5 +1,8 @@
 /**
- * Hash Generator Tool
+ * Hash Generator Tool (UI).
+ *
+ * Logic lives in toolbox/tools/hash-generator.logic.js
+ * (window.hashGeneratorLogic). Tested in tests/hash-generator.test.js.
  */
 (function() {
     const hashGeneratorTool = {
@@ -72,26 +75,26 @@
             const resSha1 = document.getElementById('res-sha1');
             const resSha256 = document.getElementById('res-sha256');
             const resSha512 = document.getElementById('res-sha512');
+            const CryptoJSLib = typeof CryptoJS !== 'undefined' ? CryptoJS : null;
 
-            if (typeof CryptoJS === 'undefined') {
-                resMd5.innerText = "Error: CryptoJS library not loaded.";
+            if (!CryptoJSLib) {
+                resMd5.innerText = 'Error: CryptoJS library not loaded.';
                 return;
             }
 
             const updateHashes = () => {
-                const text = input.value;
-                if (!text) {
+                const r = window.hashGeneratorLogic.hash(input.value, CryptoJSLib);
+                if (r.ok) {
+                    resMd5.innerText = r.md5;
+                    resSha1.innerText = r.sha1;
+                    resSha256.innerText = r.sha256;
+                    resSha512.innerText = r.sha512;
+                } else {
                     resMd5.innerText = '';
                     resSha1.innerText = '';
                     resSha256.innerText = '';
                     resSha512.innerText = '';
-                    return;
                 }
-
-                resMd5.innerText = CryptoJS.MD5(text).toString();
-                resSha1.innerText = CryptoJS.SHA1(text).toString();
-                resSha256.innerText = CryptoJS.SHA256(text).toString();
-                resSha512.innerText = CryptoJS.SHA512(text).toString();
             };
 
             input.addEventListener('input', updateHashes);
