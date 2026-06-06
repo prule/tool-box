@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/case-converter.logic.js (window.caseConverterLogic).
  * Tested in tests/case-converter.test.js.
  */
-(function() {
+(function () {
     const caseConverterTool = {
         id: 'case-converter',
         name: 'Case Converter',
-        render: function() {
+        render: function () {
             return `
                 <h1>Case Converter</h1>
                 <p>
@@ -44,7 +44,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const input = document.getElementById('case-input');
             const output = document.getElementById('case-output');
             const buttonContainer = document.getElementById('case-buttons');
@@ -58,12 +58,12 @@
                         if (text) {
                             output.value = logic.convert(text, caseType);
                         } else {
-                            output.value = "";
+                            output.value = '';
                         }
                     }
                 });
             }
-        }
+        },
     };
 
     if (window.toolboxApp) {

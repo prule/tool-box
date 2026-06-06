@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/markdown-previewer.logic.js
  * (window.markdownPreviewerLogic). Tested in tests/markdown-previewer.test.js.
  */
-(function() {
+(function () {
     const markdownPreviewerTool = {
         id: 'markdown-previewer',
         name: 'Markdown Previewer',
-        render: function() {
+        render: function () {
             return `
                 <h1>Markdown Previewer</h1>
                 <p>
@@ -34,7 +34,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const input = document.getElementById('md-input');
             const preview = document.getElementById('md-preview');
             const markedLib = typeof marked !== 'undefined' ? marked : null;
@@ -43,11 +43,12 @@
             // can never execute. If DOMPurify failed to load we still
             // render — Markdown input today is self-XSS only — but log it
             // so the regression is visible.
-            const sanitize = typeof DOMPurify !== 'undefined'
-                ? (html) => DOMPurify.sanitize(html)
-                : undefined;
+            const sanitize =
+                typeof DOMPurify !== 'undefined' ? (html) => DOMPurify.sanitize(html) : undefined;
             if (!sanitize && typeof console !== 'undefined') {
-                console.warn('DOMPurify not loaded; Markdown preview will render unsanitised HTML.');
+                console.warn(
+                    'DOMPurify not loaded; Markdown preview will render unsanitised HTML.'
+                );
             }
 
             const updatePreview = () => {
@@ -63,9 +64,10 @@
             input.addEventListener('input', updatePreview);
 
             // Initial content for demonstration
-            input.value = "# Hello, Markdown!\n\nStart typing to see the magic...\n\n- Lists are easy\n- **Bold** and *italic* text\n- `Code snippets`";
+            input.value =
+                '# Hello, Markdown!\n\nStart typing to see the magic...\n\n- Lists are easy\n- **Bold** and *italic* text\n- `Code snippets`';
             updatePreview();
-        }
+        },
     };
 
     if (window.toolboxApp) {

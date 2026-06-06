@@ -8,13 +8,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(
-    resolve(__dirname, '../toolbox/tools/base64-encoder.logic.js'),
-    'utf8',
-);
+const source = readFileSync(resolve(__dirname, '../toolbox/tools/base64-encoder.logic.js'), 'utf8');
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { encode, decode, bytesToBase64, base64ToBytes } = fakeWindow.base64EncoderLogic;
@@ -45,9 +42,9 @@ describe('encode', () => {
     });
 
     it('produces base64 with proper padding', () => {
-        expect(encode('a').base64).toBe('YQ==');     // 1 byte → 2 pad
-        expect(encode('ab').base64).toBe('YWI=');    // 2 bytes → 1 pad
-        expect(encode('abc').base64).toBe('YWJj');   // 3 bytes → 0 pad
+        expect(encode('a').base64).toBe('YQ=='); // 1 byte → 2 pad
+        expect(encode('ab').base64).toBe('YWI='); // 2 bytes → 1 pad
+        expect(encode('abc').base64).toBe('YWJj'); // 3 bytes → 0 pad
     });
 
     it('rejects non-string input', () => {

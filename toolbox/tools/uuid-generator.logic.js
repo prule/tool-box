@@ -12,8 +12,7 @@
 
     // Canonical 8-4-4-4-12 hex form. Accepts any version digit / variant —
     // useful for validating the namespace input.
-    const UUID_REGEX =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
     function isValidUuid(s) {
         return typeof s === 'string' && UUID_REGEX.test(s);

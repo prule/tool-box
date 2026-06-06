@@ -4,18 +4,15 @@
  * Logic lives in toolbox/tools/timestamp-converter.logic.js and is exposed on
  * `window.timestampConverterLogic`. Tested in tests/timestamp-converter.test.js.
  */
-(function() {
+(function () {
     function escape(s) {
-        return String(s)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     const timestampConverter = {
         id: 'timestamp-converter',
         name: 'Timestamp Converter',
-        render: function() {
+        render: function () {
             return `
                 <h1>Timestamp Converter</h1>
                 <p>
@@ -50,19 +47,19 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const btn = document.getElementById('convert-ts-btn');
             if (btn) btn.addEventListener('click', this.convert);
 
             const nowBtn = document.getElementById('ts-now-btn');
             if (nowBtn) nowBtn.addEventListener('click', this.fillNow);
         },
-        fillNow: function() {
+        fillNow: function () {
             const logic = window.timestampConverterLogic;
             const unit = document.getElementById('ts-unit').value;
             document.getElementById('ts-input').value = String(logic.now(unit));
         },
-        convert: function() {
+        convert: function () {
             const input = document.getElementById('ts-input').value;
             const unit = document.getElementById('ts-unit').value;
             const resultDiv = document.getElementById('ts-result');
@@ -103,7 +100,7 @@
                     <strong>ISO 8601:</strong> ${escape(r.iso)}
                 `;
             }
-        }
+        },
     };
 
     if (window.toolboxApp) {

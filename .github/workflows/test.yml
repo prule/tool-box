@@ -1,38 +1,59 @@
 name: tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 # Cancel an in-progress run when a new commit lands on the same ref —
 # avoids two CI jobs racing on a hot PR.
 concurrency:
-  group: tests-${{ github.ref }}
-  cancel-in-progress: true
+    group: tests-${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  test:
-    name: vitest (Node ${{ matrix.node-version }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        # Lower bound matches the engines requirement in package.json; upper
-        # bound is the current LTS.
-        node-version: ['20', '22']
-    steps:
-      - uses: actions/checkout@v4
+    test:
+        name: vitest (Node ${{ matrix.node-version }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                # Lower bound matches the engines requirement in package.json; upper
+                # bound is the current LTS.
+                node-version: ['20', '22']
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
+            - name: Set up Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Run tests
-        run: npm test
+            - name: Run tests
+              run: npm test
+
+    lint:
+        name: lint + format
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up Node.js 22
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: ESLint
+              run: npm run lint
+
+            - name: Prettier format check
+              run: npm run format:check

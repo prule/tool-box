@@ -7,19 +7,19 @@ Be concise.
 
 Folders in this project:
 
-- `docs`: information about architecture, design and specs.
-- `toolbox`: javascript source code
-- `tests`: tests
+-   `docs`: information about architecture, design and specs.
+-   `toolbox`: javascript source code
+-   `tests`: tests
 
 When making changes ensure:
 
-- ask for more information when required to ensure the right solution
-- documentation is kept up to date
-- tests are updated
-- sample code is updated
-- use clean code
-- if you see something that needs fixing or cleaning up add to docs/technical-debt.md
-- if something in technical-debt.md is cleaned up, mark it as DONE in docs/technical-debt.md
+-   ask for more information when required to ensure the right solution
+-   documentation is kept up to date
+-   tests are updated
+-   sample code is updated
+-   use clean code
+-   if you see something that needs fixing or cleaning up add to docs/technical-debt.md
+-   if something in technical-debt.md is cleaned up, mark it as DONE in docs/technical-debt.md
 
 ## Startup routine
 

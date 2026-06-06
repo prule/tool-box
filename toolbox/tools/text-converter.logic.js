@@ -21,13 +21,17 @@
 
     function bytesToHex(bytes) {
         return Array.from(bytes)
-            .map(function (b) { return b.toString(16).padStart(2, '0'); })
+            .map(function (b) {
+                return b.toString(16).padStart(2, '0');
+            })
             .join(' ');
     }
 
     function bytesToBinary(bytes) {
         return Array.from(bytes)
-            .map(function (b) { return b.toString(2).padStart(8, '0'); })
+            .map(function (b) {
+                return b.toString(2).padStart(8, '0');
+            })
             .join(' ');
     }
 

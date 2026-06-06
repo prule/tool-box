@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/counter.logic.js (window.counterLogic).
  * Tested in tests/counter.test.js.
  */
-(function() {
+(function () {
     const counterTool = {
         id: 'counter',
         name: 'Text Counter',
-        render: function() {
+        render: function () {
             return `
                 <h1>Text Counter</h1>
                 <p>
@@ -47,7 +47,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const input = document.getElementById('counter-input');
             const countChars = document.getElementById('count-chars');
             const countWords = document.getElementById('count-words');
@@ -63,7 +63,7 @@
             };
 
             input.addEventListener('input', updateCounts);
-        }
+        },
     };
 
     if (window.toolboxApp) {

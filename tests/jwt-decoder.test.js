@@ -8,13 +8,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(
-    resolve(__dirname, '../toolbox/tools/jwt-decoder.logic.js'),
-    'utf8',
-);
+const source = readFileSync(resolve(__dirname, '../toolbox/tools/jwt-decoder.logic.js'), 'utf8');
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { decode, base64UrlDecode } = fakeWindow.jwtDecoderLogic;
@@ -22,11 +19,10 @@ const { decode, base64UrlDecode } = fakeWindow.jwtDecoderLogic;
 /** Helper: encode UTF-8 text → base64url (no padding). */
 function b64url(text) {
     const bytes = new TextEncoder().encode(text);
-    const binary = Array.from(bytes, function (b) { return String.fromCodePoint(b); }).join('');
-    return btoa(binary)
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
+    const binary = Array.from(bytes, function (b) {
+        return String.fromCodePoint(b);
+    }).join('');
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 /** Helper: build a token from header + payload + (optional) signature. */

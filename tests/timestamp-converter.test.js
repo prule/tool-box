@@ -12,32 +12,25 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(
     resolve(__dirname, '../toolbox/tools/timestamp-converter.logic.js'),
-    'utf8',
+    'utf8'
 );
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
-const {
-    timestampToDate,
-    parseDateString,
-    convertTimestamp,
-    convertDateString,
-    now,
-} = fakeWindow.timestampConverterLogic;
+const { timestampToDate, parseDateString, convertTimestamp, convertDateString, now } =
+    fakeWindow.timestampConverterLogic;
 
 describe('timestampToDate', () => {
     it('converts ms to a Date', () => {
         // 1678881600000 ms = 2023-03-15T12:00:00Z
-        expect(timestampToDate(1678881600000, 'ms').toISOString())
-            .toBe('2023-03-15T12:00:00.000Z');
+        expect(timestampToDate(1678881600000, 'ms').toISOString()).toBe('2023-03-15T12:00:00.000Z');
     });
 
     it('converts sec to a Date', () => {
         // 1678881600 sec = 2023-03-15T12:00:00Z
-        expect(timestampToDate(1678881600, 'sec').toISOString())
-            .toBe('2023-03-15T12:00:00.000Z');
+        expect(timestampToDate(1678881600, 'sec').toISOString()).toBe('2023-03-15T12:00:00.000Z');
     });
 
     it('treats epoch 0 sec/ms as 1970-01-01', () => {
@@ -50,8 +43,7 @@ describe('timestampToDate', () => {
     });
 
     it('accepts string digits', () => {
-        expect(timestampToDate('1678881600', 'sec').toISOString())
-            .toBe('2023-03-15T12:00:00.000Z');
+        expect(timestampToDate('1678881600', 'sec').toISOString()).toBe('2023-03-15T12:00:00.000Z');
     });
 
     it('rejects non-numeric input', () => {
@@ -65,13 +57,13 @@ describe('timestampToDate', () => {
 
 describe('parseDateString', () => {
     it('parses ISO 8601 with Z', () => {
-        expect(parseDateString('2023-03-15T12:00:00Z').toISOString())
-            .toBe('2023-03-15T12:00:00.000Z');
+        expect(parseDateString('2023-03-15T12:00:00Z').toISOString()).toBe(
+            '2023-03-15T12:00:00.000Z'
+        );
     });
 
     it('parses date-only as UTC midnight', () => {
-        expect(parseDateString('2023-03-15').toISOString())
-            .toBe('2023-03-15T00:00:00.000Z');
+        expect(parseDateString('2023-03-15').toISOString()).toBe('2023-03-15T00:00:00.000Z');
     });
 
     it('rejects garbage', () => {
@@ -106,15 +98,21 @@ describe('convertTimestamp', () => {
     });
 
     it('errors on empty input', () => {
-        expect(convertTimestamp({ input: '', unit: 'ms' }))
-            .toEqual({ ok: false, error: 'Please enter a value.' });
-        expect(convertTimestamp({ input: '   ', unit: 'ms' }))
-            .toEqual({ ok: false, error: 'Please enter a value.' });
+        expect(convertTimestamp({ input: '', unit: 'ms' })).toEqual({
+            ok: false,
+            error: 'Please enter a value.',
+        });
+        expect(convertTimestamp({ input: '   ', unit: 'ms' })).toEqual({
+            ok: false,
+            error: 'Please enter a value.',
+        });
     });
 
     it('errors on non-numeric input', () => {
-        expect(convertTimestamp({ input: 'abc', unit: 'ms' }))
-            .toEqual({ ok: false, error: 'Invalid timestamp.' });
+        expect(convertTimestamp({ input: 'abc', unit: 'ms' })).toEqual({
+            ok: false,
+            error: 'Invalid timestamp.',
+        });
     });
 
     it('errors on unknown unit', () => {
@@ -142,13 +140,17 @@ describe('convertDateString', () => {
     });
 
     it('errors on empty input', () => {
-        expect(convertDateString({ input: '' }))
-            .toEqual({ ok: false, error: 'Please enter a value.' });
+        expect(convertDateString({ input: '' })).toEqual({
+            ok: false,
+            error: 'Please enter a value.',
+        });
     });
 
     it('errors on invalid date string', () => {
-        expect(convertDateString({ input: 'not a date' }))
-            .toEqual({ ok: false, error: 'Invalid Date' });
+        expect(convertDateString({ input: 'not a date' })).toEqual({
+            ok: false,
+            error: 'Invalid Date',
+        });
     });
 });
 

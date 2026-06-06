@@ -34,7 +34,7 @@
         }
         try {
             return { ok: true, text: decodeURIComponent(encoded) };
-        } catch (e) {
+        } catch {
             return { ok: false, error: 'Invalid URL encoded string' };
         }
     }

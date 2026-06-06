@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/jwt-decoder.logic.js
  * (window.jwtDecoderLogic). Tested in tests/jwt-decoder.test.js.
  */
-(function() {
+(function () {
     const jwtDecoderTool = {
         id: 'jwt-decoder',
         name: 'JWT Decoder',
-        render: function() {
+        render: function () {
             return `
                 <h1>JWT Decoder</h1>
                 <p>
@@ -38,11 +38,11 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const jwtInput = document.getElementById('jwt-input');
             jwtInput.addEventListener('input', () => this.decode(jwtInput.value));
         },
-        decode: function(token) {
+        decode: function (token) {
             const headerDiv = document.getElementById('jwt-header');
             const payloadDiv = document.getElementById('jwt-payload');
 
@@ -57,7 +57,7 @@
                 headerDiv.innerText = 'Invalid JWT Header';
                 payloadDiv.innerText = 'Invalid JWT Payload';
             }
-        }
+        },
     };
 
     if (window.toolboxApp) {

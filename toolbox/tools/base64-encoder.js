@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/base64-encoder.logic.js (window.base64EncoderLogic).
  * Tested in tests/base64-encoder.test.js.
  */
-(function() {
+(function () {
     const base64Tool = {
         id: 'base64-encoder',
         name: 'Base64 Encoder',
-        render: function() {
+        render: function () {
             return `
                 <h1>Base64 Encoder & Decoder</h1>
                 <p>
@@ -35,7 +35,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const plainInput = document.getElementById('base64-plain');
             const encodedInput = document.getElementById('base64-encoded');
             const logic = window.base64EncoderLogic;

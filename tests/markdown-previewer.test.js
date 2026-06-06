@@ -15,18 +15,18 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(
     resolve(__dirname, '../toolbox/tools/markdown-previewer.logic.js'),
-    'utf8',
+    'utf8'
 );
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { render } = fakeWindow.markdownPreviewerLogic;
 
 function makeMockMarked({ html = '<p>mock</p>', parseThrows = null } = {}) {
     return {
-        parse: vi.fn((text) => {
+        parse: vi.fn((_text) => {
             if (parseThrows) throw new Error(parseThrows);
             return html;
         }),
@@ -140,7 +140,8 @@ describe('sanitisation', () => {
             html: '<p onclick="bad()">hi</p><script>alert(1)</script>',
         });
         const sanitize = (html) =>
-            html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+            html
+                .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
                 .replace(/\son\w+="[^"]*"/gi, '');
         const r = render('whatever', lib, sanitize);
         expect(r.ok).toBe(true);
