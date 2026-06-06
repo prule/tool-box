@@ -38,9 +38,20 @@
             const input = document.getElementById('md-input');
             const preview = document.getElementById('md-preview');
             const markedLib = typeof marked !== 'undefined' ? marked : null;
+            // Pipe the rendered HTML through DOMPurify before innerHTML so
+            // raw <script>, inline event handlers, javascript: URLs, etc.
+            // can never execute. If DOMPurify failed to load we still
+            // render — Markdown input today is self-XSS only — but log it
+            // so the regression is visible.
+            const sanitize = typeof DOMPurify !== 'undefined'
+                ? (html) => DOMPurify.sanitize(html)
+                : undefined;
+            if (!sanitize && typeof console !== 'undefined') {
+                console.warn('DOMPurify not loaded; Markdown preview will render unsanitised HTML.');
+            }
 
             const updatePreview = () => {
-                const r = window.markdownPreviewerLogic.render(input.value, markedLib);
+                const r = window.markdownPreviewerLogic.render(input.value, markedLib, sanitize);
                 preview.innerHTML = r.ok ? r.html : 'Error: ' + r.error;
             };
 

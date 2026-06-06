@@ -66,7 +66,11 @@ describe('valid input (mock orchestration)', () => {
 
     it('returns whatever markedLib.parse returns as the html field', () => {
         const lib = makeMockMarked({ html: '<h1>Hello</h1>' });
-        expect(render('# Hello', lib)).toEqual({ ok: true, html: '<h1>Hello</h1>' });
+        expect(render('# Hello', lib)).toEqual({
+            ok: true,
+            html: '<h1>Hello</h1>',
+            sanitized: false,
+        });
     });
 
     it('coerces non-string input to the empty string', () => {
@@ -81,7 +85,7 @@ describe('valid input (mock orchestration)', () => {
 
     it('passes the empty string through unchanged', () => {
         const lib = makeMockMarked({ html: '' });
-        expect(render('', lib)).toEqual({ ok: true, html: '' });
+        expect(render('', lib)).toEqual({ ok: true, html: '', sanitized: false });
         expect(lib.parse).toHaveBeenCalledWith('');
     });
 
@@ -90,6 +94,58 @@ describe('valid input (mock orchestration)', () => {
         const text = '# Title\n\n- one\n- two\n\nparagraph';
         render(text, lib);
         expect(lib.parse).toHaveBeenCalledWith(text);
+    });
+
+    it('reports sanitized:false when no sanitiser is supplied', () => {
+        const lib = makeMockMarked({ html: '<p>hi</p>' });
+        const r = render('hi', lib);
+        expect(r.ok).toBe(true);
+        expect(r.sanitized).toBe(false);
+    });
+});
+
+describe('sanitisation', () => {
+    it('calls the sanitiser with the html produced by markedLib', () => {
+        const lib = makeMockMarked({ html: '<p>hi</p>' });
+        const sanitize = vi.fn((html) => html);
+        render('hi', lib, sanitize);
+        expect(sanitize).toHaveBeenCalledOnce();
+        expect(sanitize).toHaveBeenCalledWith('<p>hi</p>');
+    });
+
+    it('returns the sanitised html and sets sanitized:true', () => {
+        const lib = makeMockMarked({ html: '<p>raw</p>' });
+        const sanitize = (html) => html.replace('raw', 'clean');
+        expect(render('x', lib, sanitize)).toEqual({
+            ok: true,
+            html: '<p>clean</p>',
+            sanitized: true,
+        });
+    });
+
+    it('falls back to unsanitised output when sanitize is not a function', () => {
+        const lib = makeMockMarked({ html: '<p>raw</p>' });
+        // null, undefined, and non-function values are all ignored.
+        expect(render('x', lib, null).sanitized).toBe(false);
+        expect(render('x', lib, undefined).sanitized).toBe(false);
+        expect(render('x', lib, 'not-a-fn').sanitized).toBe(false);
+        expect(render('x', lib, {}).sanitized).toBe(false);
+    });
+
+    it('drops <script> tags via a DOMPurify-style stub', () => {
+        // Stub stand-in for DOMPurify: strips <script>...</script> blocks
+        // and inline event handlers. Confirms the wiring is what catches
+        // a hostile fragment that Marked happily passes through.
+        const lib = makeMockMarked({
+            html: '<p onclick="bad()">hi</p><script>alert(1)</script>',
+        });
+        const sanitize = (html) =>
+            html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+                .replace(/\son\w+="[^"]*"/gi, '');
+        const r = render('whatever', lib, sanitize);
+        expect(r.ok).toBe(true);
+        expect(r.html).toBe('<p>hi</p>');
+        expect(r.sanitized).toBe(true);
     });
 });
 
@@ -113,18 +169,27 @@ describe('end-to-end with a stub renderer', () => {
     };
 
     it('renders a heading', () => {
-        expect(render('# Hello', stub)).toEqual({ ok: true, html: '<h1>Hello</h1>' });
+        expect(render('# Hello', stub)).toEqual({
+            ok: true,
+            html: '<h1>Hello</h1>',
+            sanitized: false,
+        });
     });
 
     it('renders bold inline', () => {
         expect(render('a **bold** word', stub)).toEqual({
             ok: true,
             html: 'a <strong>bold</strong> word',
+            sanitized: false,
         });
     });
 
     it('handles a multi-line document', () => {
         const r = render('# Title\nthis is **bold**', stub);
-        expect(r).toEqual({ ok: true, html: '<h1>Title</h1>\nthis is <strong>bold</strong>' });
+        expect(r).toEqual({
+            ok: true,
+            html: '<h1>Title</h1>\nthis is <strong>bold</strong>',
+            sanitized: false,
+        });
     });
 });
