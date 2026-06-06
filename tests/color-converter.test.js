@@ -14,11 +14,11 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(
     resolve(__dirname, '../toolbox/tools/color-converter.logic.js'),
-    'utf8',
+    'utf8'
 );
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { convert } = fakeWindow.colorConverterLogic;
@@ -105,11 +105,26 @@ describe('valid input', () => {
     it('checks validity before calling any toString method', () => {
         const order = [];
         const ctor = vi.fn(() => ({
-            isValid: () => { order.push('isValid'); return true; },
-            toHexString: () => { order.push('hex'); return '#000'; },
-            toRgbString: () => { order.push('rgb'); return 'rgb(0,0,0)'; },
-            toHslString: () => { order.push('hsl'); return 'hsl(0,0%,0%)'; },
-            toHsvString: () => { order.push('hsv'); return 'hsv(0,0%,0%)'; },
+            isValid: () => {
+                order.push('isValid');
+                return true;
+            },
+            toHexString: () => {
+                order.push('hex');
+                return '#000';
+            },
+            toRgbString: () => {
+                order.push('rgb');
+                return 'rgb(0,0,0)';
+            },
+            toHslString: () => {
+                order.push('hsl');
+                return 'hsl(0,0%,0%)';
+            },
+            toHsvString: () => {
+                order.push('hsv');
+                return 'hsv(0,0%,0%)';
+            },
         }));
         convert('#000', ctor);
         expect(order[0]).toBe('isValid');

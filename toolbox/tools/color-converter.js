@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/color-converter.logic.js
  * (window.colorConverterLogic). Tested in tests/color-converter.test.js.
  */
-(function() {
+(function () {
     const colorConverterTool = {
         id: 'color-converter',
         name: 'Color Converter',
-        render: function() {
+        render: function () {
             return `
                 <h1>Color Converter</h1>
                 <p>
@@ -47,7 +47,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const picker = document.getElementById('color-picker');
             const hexInput = document.getElementById('color-hex');
             const rgbInput = document.getElementById('color-rgb');
@@ -55,7 +55,7 @@
             const hsvInput = document.getElementById('color-hsv');
 
             if (typeof tinycolor === 'undefined') {
-                hexInput.value = "Error: TinyColor library not loaded.";
+                hexInput.value = 'Error: TinyColor library not loaded.';
                 return;
             }
 
@@ -92,7 +92,7 @@
             normaliseOnBlur(hsvInput, 'hsv');
 
             updateColors('#4a90e2');
-        }
+        },
     };
 
     if (window.toolboxApp) {

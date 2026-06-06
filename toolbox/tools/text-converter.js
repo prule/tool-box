@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/text-converter.logic.js
  * (window.textConverterLogic). Tested in tests/text-converter.test.js.
  */
-(function() {
+(function () {
     const textConverterTool = {
         id: 'text-converter',
         name: 'Text to Hex/Binary',
-        render: function() {
+        render: function () {
             return `
                 <h1>Text to Hex & Binary Converter</h1>
                 <p>
@@ -40,7 +40,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const textInput = document.getElementById('conv-text');
             const hexInput = document.getElementById('conv-hex');
             const binaryInput = document.getElementById('conv-binary');
@@ -75,7 +75,7 @@
                     hexInput.value = '';
                 }
             });
-        }
+        },
     };
 
     if (window.toolboxApp) {

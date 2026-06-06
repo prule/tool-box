@@ -57,7 +57,7 @@
             // silently producing replacement characters.
             const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
             return { ok: true, text: text };
-        } catch (e) {
+        } catch {
             return { ok: false, error: 'Invalid Base64 string' };
         }
     }

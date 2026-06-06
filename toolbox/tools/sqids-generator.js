@@ -7,12 +7,12 @@
  * Logic lives in toolbox/tools/sqids-generator.logic.js
  * (window.sqidsGeneratorLogic). Tested in tests/sqids-generator.test.js.
  */
-(function() {
+(function () {
     const sqidsTool = {
         id: 'sqids-generator',
         name: 'Sqids Generator',
 
-        render: function() {
+        render: function () {
             return `
                 <h1>Sqids Generator & Decoder</h1>
                 <p>
@@ -54,7 +54,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const btnEncode = document.getElementById('sqids-btn-encode');
             if (btnEncode) {
                 btnEncode.addEventListener('click', () => this.handleEncode());
@@ -66,12 +66,12 @@
             }
         },
 
-        getOptions: function() {
+        getOptions: function () {
             const alphabet = document.getElementById('sqids-alphabet').value;
             return alphabet ? { alphabet: alphabet } : {};
         },
 
-        handleEncode: function() {
+        handleEncode: function () {
             const input = document.getElementById('sqids-input-encode').value;
             const resultDiv = document.getElementById('sqids-result-encode');
             const SqidsLib = typeof Sqids !== 'undefined' ? Sqids : null;
@@ -79,13 +79,13 @@
             resultDiv.innerText = r.ok ? r.id : r.error;
         },
 
-        handleDecode: function() {
+        handleDecode: function () {
             const input = document.getElementById('sqids-input-decode').value;
             const resultDiv = document.getElementById('sqids-result-decode');
             const SqidsLib = typeof Sqids !== 'undefined' ? Sqids : null;
             const r = window.sqidsGeneratorLogic.decode(input, this.getOptions(), SqidsLib);
             resultDiv.innerText = r.ok ? r.numbers.join(', ') : r.error;
-        }
+        },
     };
 
     if (window.toolboxApp) {

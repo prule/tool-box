@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/url-encoder.logic.js (window.urlEncoderLogic).
  * Tested in tests/url-encoder.test.js.
  */
-(function() {
+(function () {
     const urlEncoderTool = {
         id: 'url-encoder',
         name: 'URL Encoder',
-        render: function() {
+        render: function () {
             return `
                 <h1>URL Encoder & Decoder</h1>
                 <p>
@@ -35,7 +35,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const plainInput = document.getElementById('url-plain');
             const encodedInput = document.getElementById('url-encoded');
             const logic = window.urlEncoderLogic;
@@ -49,7 +49,7 @@
                 const r = logic.decode(encodedInput.value);
                 plainInput.value = r.ok ? r.text : 'Error: ' + r.error;
             });
-        }
+        },
     };
 
     if (window.toolboxApp) {

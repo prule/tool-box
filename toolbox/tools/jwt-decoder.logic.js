@@ -27,7 +27,9 @@
         let padded = s.replace(/-/g, '+').replace(/_/g, '/');
         while (padded.length % 4) padded += '=';
         const binary = atob(padded);
-        const bytes = Uint8Array.from(binary, function (c) { return c.charCodeAt(0); });
+        const bytes = Uint8Array.from(binary, function (c) {
+            return c.charCodeAt(0);
+        });
         return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
     }
 

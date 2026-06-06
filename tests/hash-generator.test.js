@@ -15,13 +15,10 @@ import { dirname, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(
-    resolve(__dirname, '../toolbox/tools/hash-generator.logic.js'),
-    'utf8',
-);
+const source = readFileSync(resolve(__dirname, '../toolbox/tools/hash-generator.logic.js'), 'utf8');
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { hash } = fakeWindow.hashGeneratorLogic;
@@ -31,9 +28,10 @@ const { hash } = fakeWindow.hashGeneratorLogic;
  * returns an object with a toString that yields a fixed value.
  */
 function makeMockCryptoJS() {
-    const make = (label) => vi.fn((text) => ({
-        toString: () => label + ':' + text,
-    }));
+    const make = (label) =>
+        vi.fn((text) => ({
+            toString: () => label + ':' + text,
+        }));
     return {
         MD5: make('md5'),
         SHA1: make('sha1'),
@@ -112,7 +110,7 @@ describe('valid input (mock orchestration)', () => {
         expect(lib.SHA512).toHaveBeenCalledWith('hello');
     });
 
-    it('maps each algorithm\'s toString() result to the right field', () => {
+    it("maps each algorithm's toString() result to the right field", () => {
         const r = hash('hello', makeMockCryptoJS());
         expect(r).toEqual({
             ok: true,
@@ -137,11 +135,9 @@ describe('valid input (real-value check via node:crypto stand-in)', () => {
         expect(r.ok).toBe(true);
         expect(r.md5).toBe('5d41402abc4b2a76b9719d911017c592');
         expect(r.sha1).toBe('aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d');
-        expect(r.sha256).toBe(
-            '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824',
-        );
+        expect(r.sha256).toBe('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824');
         expect(r.sha512).toBe(
-            '9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadae2dff72519673ca72323c3d99ba5c11d7c7acc6e14b8c5da0c4663475c2e5c3adef46f73bcdec043',
+            '9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadae2dff72519673ca72323c3d99ba5c11d7c7acc6e14b8c5da0c4663475c2e5c3adef46f73bcdec043'
         );
     });
 

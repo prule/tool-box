@@ -41,8 +41,12 @@
         };
         // Round-trip through UTC to reject impossible dates (Feb 30, etc.)
         const utcMs = Date.UTC(
-            parts.year, parts.month - 1, parts.day,
-            parts.hour, parts.minute, parts.second,
+            parts.year,
+            parts.month - 1,
+            parts.day,
+            parts.hour,
+            parts.minute,
+            parts.second
         );
         const d = new Date(utcMs);
         if (
@@ -85,7 +89,7 @@
             Number(map.day),
             hour,
             Number(map.minute),
-            Number(map.second),
+            Number(map.second)
         );
         return asUTC - date.getTime();
     }
@@ -97,8 +101,12 @@
      */
     function wallClockToInstant(components, timeZone) {
         const utcGuessMs = Date.UTC(
-            components.year, components.month - 1, components.day,
-            components.hour, components.minute, components.second,
+            components.year,
+            components.month - 1,
+            components.day,
+            components.hour,
+            components.minute,
+            components.second
         );
         const offset1 = getZoneOffsetMs(new Date(utcGuessMs), timeZone);
         const candidateMs = utcGuessMs - offset1;
@@ -110,16 +118,19 @@
      * Formats a Date in the given timezone using a sensible default option set.
      */
     function formatInZone(date, timeZone, overrides, locale) {
-        const options = Object.assign({
-            timeZone: timeZone,
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'long',
-        }, overrides || {});
+        const options = Object.assign(
+            {
+                timeZone: timeZone,
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'long',
+            },
+            overrides || {}
+        );
         return new Intl.DateTimeFormat(locale || 'en-US', options).format(date);
     }
 

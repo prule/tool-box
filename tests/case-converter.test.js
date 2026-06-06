@@ -8,13 +8,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(
-    resolve(__dirname, '../toolbox/tools/case-converter.logic.js'),
-    'utf8',
-);
+const source = readFileSync(resolve(__dirname, '../toolbox/tools/case-converter.logic.js'), 'utf8');
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { getWords, convert } = fakeWindow.caseConverterLogic;
@@ -65,9 +62,14 @@ describe('getWords', () => {
     });
 
     it('handles mixed separators and camelCase together', () => {
-        expect(getWords('helloWorld_foo-bar BazQux')).toEqual(
-            ['hello', 'World', 'foo', 'bar', 'Baz', 'Qux'],
-        );
+        expect(getWords('helloWorld_foo-bar BazQux')).toEqual([
+            'hello',
+            'World',
+            'foo',
+            'bar',
+            'Baz',
+            'Qux',
+        ]);
     });
 });
 

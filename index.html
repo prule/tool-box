@@ -1,95 +1,107 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toolbox</title>
-    <link rel="stylesheet" href="styles.css">
-    <!--
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Toolbox</title>
+        <link rel="stylesheet" href="styles.css" />
+        <!--
         All CDN scripts are version-pinned and protected with Subresource
         Integrity (SRI). If a CDN ever serves modified bytes for one of
         these URLs, the browser will refuse to execute it. When bumping a
         version, regenerate the integrity hash (`curl -sL <url> | openssl
         dgst -sha384 -binary | openssl base64 -A`).
     -->
-    <!-- Load uuid library from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"
+        <!-- Load uuid library from CDN -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"
             integrity="sha384-BqW9ZnUhs8B3bGaZeNfcY6qQnTHMeMu5/NsLjEoGGzY5eXVsGlTxQC18eAn5bY9z"
             crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
-    <!-- Load Marked.js for Markdown Preview -->
-    <script src="https://cdn.jsdelivr.net/npm/marked@18.0.5/marked.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <!-- Load Marked.js for Markdown Preview -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/marked@18.0.5/marked.min.js"
             integrity="sha384-tkjnnf9Tzhv5ZFrDroGvUExw9C3EVFo0RFRkzKR8ZX4b5Psoec4yb1PlD8Jh4j4H"
             crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
-    <!-- Load DOMPurify to sanitise rendered Markdown HTML -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <!-- Load DOMPurify to sanitise rendered Markdown HTML -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"
             integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a"
             crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
-    <!-- Load Crypto-JS for Hashing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <!-- Load Crypto-JS for Hashing -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
             integrity="sha384-S3wQ/l0OsbJoFeJC81UIr3JOlx/OzNJpRt1bV+yhpWQxPAahfpQtpxBSfn+Isslc"
             crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
-    <!-- Load TinyColor for Color Conversion -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.2/tinycolor.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <!-- Load TinyColor for Color Conversion -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.2/tinycolor.min.js"
             integrity="sha384-AZ8EPX4FWLU/SIr5Xfoem6KYnSN7QhmrnEZIzF2NjoDoX9PV9GMuA0XCI3jndPym"
             crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
-    <!-- Load Sqids for ID Generation -->
-    <script src="https://cdn.jsdelivr.net/npm/sqids@0.3.0/dist/sqids.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <!-- Load Sqids for ID Generation -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/sqids@0.3.0/dist/sqids.min.js"
             integrity="sha384-v+vDB+pOfvMm6rzjycM3UB5+QxJVPjwooBNaZNCTEI/96PAhOihxhP1U+xbRIWF7"
             crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
-</head>
-<body>
-    <div class="container">
-        <nav class="sidebar">
-            <h2>Toolbox</h2>
-            <ul id="tool-list">
-                <!-- Tool links will be dynamically added here -->
-            </ul>
-        </nav>
-        <main class="content">
-            <div id="tool-container">
-                <h1>Welcome to Toolbox</h1>
-                <p>Select a tool from the sidebar to get started.</p>
-            </div>
-        </main>
-    </div>
+            referrerpolicy="no-referrer"
+        ></script>
+    </head>
+    <body>
+        <div class="container">
+            <nav class="sidebar">
+                <h2>Toolbox</h2>
+                <ul id="tool-list">
+                    <!-- Tool links will be dynamically added here -->
+                </ul>
+            </nav>
+            <main class="content">
+                <div id="tool-container">
+                    <h1>Welcome to Toolbox</h1>
+                    <p>Select a tool from the sidebar to get started.</p>
+                </div>
+            </main>
+        </div>
 
-    <!-- Core Application Logic -->
-    <script src="toolbox/app.js"></script>
+        <!-- Core Application Logic -->
+        <script src="toolbox/app.js"></script>
 
-    <!-- Tool Scripts: Add new tools here -->
-    <script src="toolbox/tools/uuid-generator.logic.js"></script>
-    <script src="toolbox/tools/uuid-generator.js"></script>
-    <script src="toolbox/tools/timestamp-converter.logic.js"></script>
-    <script src="toolbox/tools/timestamp-converter.js"></script>
-    <script src="toolbox/tools/timezone-converter.logic.js"></script>
-    <script src="toolbox/tools/timezone-converter.js"></script>
-    <script src="toolbox/tools/sqids-generator.logic.js"></script>
-    <script src="toolbox/tools/sqids-generator.js"></script>
-    <script src="toolbox/tools/base64-encoder.logic.js"></script>
-    <script src="toolbox/tools/base64-encoder.js"></script>
-    <script src="toolbox/tools/url-encoder.logic.js"></script>
-    <script src="toolbox/tools/url-encoder.js"></script>
-    <script src="toolbox/tools/jwt-decoder.logic.js"></script>
-    <script src="toolbox/tools/jwt-decoder.js"></script>
-    <script src="toolbox/tools/json-formatter.logic.js"></script>
-    <script src="toolbox/tools/json-formatter.js"></script>
-    <script src="toolbox/tools/markdown-previewer.logic.js"></script>
-    <script src="toolbox/tools/markdown-previewer.js"></script>
-    <script src="toolbox/tools/case-converter.logic.js"></script>
-    <script src="toolbox/tools/case-converter.js"></script>
-    <script src="toolbox/tools/counter.logic.js"></script>
-    <script src="toolbox/tools/counter.js"></script>
-    <script src="toolbox/tools/hash-generator.logic.js"></script>
-    <script src="toolbox/tools/hash-generator.js"></script>
-    <script src="toolbox/tools/color-converter.logic.js"></script>
-    <script src="toolbox/tools/color-converter.js"></script>
-    <script src="toolbox/tools/text-converter.logic.js"></script>
-    <script src="toolbox/tools/text-converter.js"></script>
-</body>
+        <!-- Tool Scripts: Add new tools here -->
+        <script src="toolbox/tools/uuid-generator.logic.js"></script>
+        <script src="toolbox/tools/uuid-generator.js"></script>
+        <script src="toolbox/tools/timestamp-converter.logic.js"></script>
+        <script src="toolbox/tools/timestamp-converter.js"></script>
+        <script src="toolbox/tools/timezone-converter.logic.js"></script>
+        <script src="toolbox/tools/timezone-converter.js"></script>
+        <script src="toolbox/tools/sqids-generator.logic.js"></script>
+        <script src="toolbox/tools/sqids-generator.js"></script>
+        <script src="toolbox/tools/base64-encoder.logic.js"></script>
+        <script src="toolbox/tools/base64-encoder.js"></script>
+        <script src="toolbox/tools/url-encoder.logic.js"></script>
+        <script src="toolbox/tools/url-encoder.js"></script>
+        <script src="toolbox/tools/jwt-decoder.logic.js"></script>
+        <script src="toolbox/tools/jwt-decoder.js"></script>
+        <script src="toolbox/tools/json-formatter.logic.js"></script>
+        <script src="toolbox/tools/json-formatter.js"></script>
+        <script src="toolbox/tools/markdown-previewer.logic.js"></script>
+        <script src="toolbox/tools/markdown-previewer.js"></script>
+        <script src="toolbox/tools/case-converter.logic.js"></script>
+        <script src="toolbox/tools/case-converter.js"></script>
+        <script src="toolbox/tools/counter.logic.js"></script>
+        <script src="toolbox/tools/counter.js"></script>
+        <script src="toolbox/tools/hash-generator.logic.js"></script>
+        <script src="toolbox/tools/hash-generator.js"></script>
+        <script src="toolbox/tools/color-converter.logic.js"></script>
+        <script src="toolbox/tools/color-converter.js"></script>
+        <script src="toolbox/tools/text-converter.logic.js"></script>
+        <script src="toolbox/tools/text-converter.js"></script>
+    </body>
 </html>

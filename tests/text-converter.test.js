@@ -8,13 +8,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(
-    resolve(__dirname, '../toolbox/tools/text-converter.logic.js'),
-    'utf8',
-);
+const source = readFileSync(resolve(__dirname, '../toolbox/tools/text-converter.logic.js'), 'utf8');
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const {
@@ -86,7 +83,9 @@ describe('bytesToBinary', () => {
     });
 
     it('pads small bytes to 8 bits', () => {
-        expect(bytesToBinary(new Uint8Array([0x00, 0x01, 0xff]))).toBe('00000000 00000001 11111111');
+        expect(bytesToBinary(new Uint8Array([0x00, 0x01, 0xff]))).toBe(
+            '00000000 00000001 11111111'
+        );
     });
 
     it('returns an empty string for an empty byte array', () => {

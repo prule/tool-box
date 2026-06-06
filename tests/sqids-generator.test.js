@@ -14,11 +14,11 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(
     resolve(__dirname, '../toolbox/tools/sqids-generator.logic.js'),
-    'utf8',
+    'utf8'
 );
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { parseNumbers, encode, decode } = fakeWindow.sqidsGeneratorLogic;
@@ -35,11 +35,11 @@ function makeMockSqids({
     ctorThrows = null,
 } = {}) {
     const instance = {
-        encode: vi.fn((nums) => {
+        encode: vi.fn((_nums) => {
             if (encodeThrows) throw new Error(encodeThrows);
             return encoded;
         }),
-        decode: vi.fn((id) => {
+        decode: vi.fn((_id) => {
             if (decodeThrows) throw new Error(decodeThrows);
             return decoded;
         }),
@@ -87,7 +87,10 @@ describe('parseNumbers', () => {
     });
 
     it('errors when the only content is empty segments', () => {
-        expect(parseNumbers(',,,')).toEqual({ ok: false, error: 'Please enter at least one number.' });
+        expect(parseNumbers(',,,')).toEqual({
+            ok: false,
+            error: 'Please enter at least one number.',
+        });
     });
 
     it('accepts zero', () => {
@@ -131,7 +134,10 @@ describe('parseNumbers', () => {
 describe('encode', () => {
     it('errors when SqidsLib is not loaded', () => {
         expect(encode('1,2', {}, null)).toEqual({ ok: false, error: 'Sqids library not loaded.' });
-        expect(encode('1,2', {}, undefined)).toEqual({ ok: false, error: 'Sqids library not loaded.' });
+        expect(encode('1,2', {}, undefined)).toEqual({
+            ok: false,
+            error: 'Sqids library not loaded.',
+        });
     });
 
     it('propagates parseNumbers errors without instantiating Sqids', () => {

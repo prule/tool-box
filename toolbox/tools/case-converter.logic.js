@@ -14,11 +14,13 @@
      */
     function getWords(str) {
         return str
-            .replace(/([a-z])([A-Z])/g, '$1 $2')      // split camelCase
+            .replace(/([a-z])([A-Z])/g, '$1 $2') // split camelCase
             .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // split acronyms (XMLParser → XML Parser)
-            .replace(/[_\-]+/g, ' ')                  // separators → space
+            .replace(/[_-]+/g, ' ') // separators → space
             .split(/\s+/)
-            .filter(function (w) { return w.length > 0; });
+            .filter(function (w) {
+                return w.length > 0;
+            });
     }
 
     /**
@@ -37,21 +39,37 @@
 
         switch (caseType) {
             case 'camel':
-                return words.map(function (w, i) {
-                    return i === 0
-                        ? w.toLowerCase()
-                        : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-                }).join('');
+                return words
+                    .map(function (w, i) {
+                        return i === 0
+                            ? w.toLowerCase()
+                            : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+                    })
+                    .join('');
             case 'pascal':
-                return words.map(function (w) {
-                    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-                }).join('');
+                return words
+                    .map(function (w) {
+                        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+                    })
+                    .join('');
             case 'snake':
-                return words.map(function (w) { return w.toLowerCase(); }).join('_');
+                return words
+                    .map(function (w) {
+                        return w.toLowerCase();
+                    })
+                    .join('_');
             case 'kebab':
-                return words.map(function (w) { return w.toLowerCase(); }).join('-');
+                return words
+                    .map(function (w) {
+                        return w.toLowerCase();
+                    })
+                    .join('-');
             case 'constant':
-                return words.map(function (w) { return w.toUpperCase(); }).join('_');
+                return words
+                    .map(function (w) {
+                        return w.toUpperCase();
+                    })
+                    .join('_');
             case 'upper':
                 return text.toUpperCase();
             case 'lower':
@@ -59,9 +77,11 @@
             case 'sentence':
                 return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
             case 'title':
-                return words.map(function (w) {
-                    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-                }).join(' ');
+                return words
+                    .map(function (w) {
+                        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+                    })
+                    .join(' ');
             default:
                 return text;
         }

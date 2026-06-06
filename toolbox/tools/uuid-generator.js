@@ -7,11 +7,11 @@
  * Logic lives in toolbox/tools/uuid-generator.logic.js
  * (window.uuidGeneratorLogic). Tested in tests/uuid-generator.test.js.
  */
-(function() {
+(function () {
     const uuidGenerator = {
         id: 'uuid-generator',
         name: 'UUID Generator',
-        render: function() {
+        render: function () {
             return `
                 <h1>UUID Generator</h1>
                 <p>
@@ -70,7 +70,7 @@
             `;
         },
 
-        init: function() {
+        init: function () {
             // Re-bind listeners when content is rendered
             const btn = document.getElementById('generate-uuid-btn');
             if (btn) {
@@ -97,7 +97,7 @@
             }
         },
 
-        toggleInputs: function() {
+        toggleInputs: function () {
             const version = document.getElementById('uuid-version').value;
             const extraInputs = document.getElementById('uuid-extra-inputs');
 
@@ -108,7 +108,7 @@
             }
         },
 
-        generate: function() {
+        generate: function () {
             const version = document.getElementById('uuid-version').value;
             const resultDiv = document.getElementById('uuid-result');
 
@@ -124,10 +124,10 @@
             const uuidLib = typeof uuid !== 'undefined' ? uuid : null;
             const r = window.uuidGeneratorLogic.generate(
                 { version: version, namespace: namespace, name: name },
-                uuidLib,
+                uuidLib
             );
             resultDiv.innerText = r.ok ? r.uuid : r.error;
-        }
+        },
     };
 
     if (window.toolboxApp) {

@@ -29,8 +29,12 @@
         }
     }
 
-    function format(input) { return process(input, 4); }
-    function compact(input) { return process(input, undefined); }
+    function format(input) {
+        return process(input, 4);
+    }
+    function compact(input) {
+        return process(input, undefined);
+    }
 
     root.jsonFormatterLogic = {
         format: format,

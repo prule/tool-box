@@ -8,13 +8,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(
-    resolve(__dirname, '../toolbox/tools/url-encoder.logic.js'),
-    'utf8',
-);
+const source = readFileSync(resolve(__dirname, '../toolbox/tools/url-encoder.logic.js'), 'utf8');
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { encode, decode } = fakeWindow.urlEncoderLogic;

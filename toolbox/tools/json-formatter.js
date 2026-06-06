@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/json-formatter.logic.js
  * (window.jsonFormatterLogic). Tested in tests/json-formatter.test.js.
  */
-(function() {
+(function () {
     const jsonFormatterTool = {
         id: 'json-formatter',
         name: 'JSON Formatter',
-        render: function() {
+        render: function () {
             return `
                 <h1>JSON Formatter & Validator</h1>
                 <p>
@@ -37,7 +37,7 @@
                 <div id="json-status" style="margin-top: 10px; font-weight: bold;"></div>
             `;
         },
-        init: function() {
+        init: function () {
             const input = document.getElementById('json-input');
             const output = document.getElementById('json-output');
             const status = document.getElementById('json-status');
@@ -62,7 +62,7 @@
 
             formatBtn.addEventListener('click', () => apply(window.jsonFormatterLogic.format));
             compactBtn.addEventListener('click', () => apply(window.jsonFormatterLogic.compact));
-        }
+        },
     };
 
     if (window.toolboxApp) {

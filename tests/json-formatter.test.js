@@ -8,13 +8,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(
-    resolve(__dirname, '../toolbox/tools/json-formatter.logic.js'),
-    'utf8',
-);
+const source = readFileSync(resolve(__dirname, '../toolbox/tools/json-formatter.logic.js'), 'utf8');
 
 const fakeWindow = {};
-// eslint-disable-next-line no-new-func
+
 new Function('window', source)(fakeWindow);
 
 const { format, compact, process } = fakeWindow.jsonFormatterLogic;
@@ -61,7 +58,7 @@ describe('format (pretty-print, indent 4)', () => {
         const r = format('{"outer":{"inner":{"deep":1}}}');
         expect(r.ok).toBe(true);
         expect(r.output).toBe(
-            '{\n    "outer": {\n        "inner": {\n            "deep": 1\n        }\n    }\n}',
+            '{\n    "outer": {\n        "inner": {\n            "deep": 1\n        }\n    }\n}'
         );
     });
 

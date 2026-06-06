@@ -4,11 +4,11 @@
  * Logic lives in toolbox/tools/hash-generator.logic.js
  * (window.hashGeneratorLogic). Tested in tests/hash-generator.test.js.
  */
-(function() {
+(function () {
     const hashGeneratorTool = {
         id: 'hash-generator',
         name: 'Hash Generator',
-        render: function() {
+        render: function () {
             return `
                 <h1>Hash Generator</h1>
                 <p>
@@ -47,7 +47,7 @@
                 </div>
             `;
         },
-        init: function() {
+        init: function () {
             const input = document.getElementById('hash-input');
             const resMd5 = document.getElementById('res-md5');
             const resSha1 = document.getElementById('res-sha1');
@@ -76,7 +76,7 @@
             };
 
             input.addEventListener('input', updateHashes);
-        }
+        },
     };
 
     if (window.toolboxApp) {
