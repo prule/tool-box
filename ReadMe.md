@@ -12,6 +12,16 @@ The toolbox currently includes the following utilities:
 *   **Timestamp Converter**: Convert between Unix timestamps (milliseconds) and human-readable dates.
 *   **Timezone Converter**: Easily convert dates and times between different time zones (e.g., UTC, Local, NY, London, Tokyo).
 *   **Sqids Generator**: Generate short, unique, YouTube-like IDs from numbers using the Sqids algorithm.
+*   **Base64 Encoder/Decoder**: Encode text to Base64 (UTF-8) and decode back.
+*   **URL Encoder/Decoder**: Percent-encode strings for URL components and decode them.
+*   **JWT Decoder**: Decode the header and payload of a JSON Web Token (signature not verified).
+*   **JSON Formatter & Validator**: Pretty-print or minify JSON and surface parser errors.
+*   **Case Converter**: Convert between camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, Title Case, etc.
+*   **Color Converter**: Convert between Hex, RGB, HSL, and HSV with a live colour picker.
+*   **Hash Generator**: MD5, SHA-1, SHA-256, and SHA-512 hashes of text input.
+*   **Markdown Previewer**: Live Markdown → sanitised HTML preview.
+*   **Text Counter**: Character, word, line, and UTF-8 byte counts.
+*   **Text ↔ Hex ↔ Binary Converter**: Two-way conversion between text (UTF-8) and hex/binary byte representations.
 
 ## 🛠️ Architecture
 
@@ -78,6 +88,8 @@ That's it! The tool will automatically appear in the sidebar.
 
 The project uses [Vitest](https://vitest.dev/) for unit tests. The site itself remains a static, build-free HTML/JS app — Node and Vitest are only used during development.
 
+**Requires Node ≥ 19** (Vite's runtime uses `crypto.getRandomValues` as a global, which older Node versions don't expose). The requirement is pinned in `package.json` under `engines`.
+
 Install dev dependencies once:
 
 ```bash
@@ -104,8 +116,16 @@ Per the project rule, **documentation, tests, and code must stay in sync** — w
 
 ## 📚 Dependencies
 
-*   **uuid**: The UUID Generator uses the [uuid](https://github.com/uuidjs/uuid) library (loaded via CDN).
-*   **Sqids**: The Sqids Generator uses a custom, lightweight implementation of the [Sqids](https://sqids.org/) algorithm included within the tool file.
+All runtime dependencies load from a CDN — there is no build step.
+
+*   **[uuid](https://github.com/uuidjs/uuid)**: UUID Generator.
+*   **[Sqids](https://sqids.org/)**: Sqids Generator (official JavaScript library).
+*   **[Marked.js](https://github.com/markedjs/marked)**: Markdown → HTML for the Markdown Previewer.
+*   **[DOMPurify](https://github.com/cure53/DOMPurify)**: Sanitises the Markdown Previewer's HTML before it reaches `innerHTML`.
+*   **[CryptoJS](https://github.com/brix/crypto-js)**: MD5 / SHA-1 / SHA-256 / SHA-512 for the Hash Generator.
+*   **[TinyColor](https://github.com/bgrins/TinyColor)**: Hex / RGB / HSL / HSV for the Color Converter.
+
+The only dev dependency is **[Vitest](https://vitest.dev/)** for the test suite.
 
 ## 📄 License
 
