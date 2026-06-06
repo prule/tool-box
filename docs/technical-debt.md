@@ -9,11 +9,6 @@ A running backlog of known issues and clean-ups. Per `CLAUDE.md`:
 
 ## Open
 
-### No CI
-Tests only run when someone remembers `npm test` locally. A GitHub Actions
-workflow that runs `npm install && npm test` on every PR would prevent
-regressions from landing.
-
 ### No linter / formatter
 No ESLint or Prettier config. Style across `toolbox/tools/*.js` drifts
 (some files use arrow functions, some classic `function`; quote style
@@ -32,6 +27,12 @@ reference the deleted `script.js`. Harmless, but if someone opens an old
 config, it will be broken.
 
 ## DONE
+
+### Run tests in CI
+`.github/workflows/test.yml` now runs `npm ci && npm test` on every push
+to `main` and every pull request, across Node 20 and 22. A `concurrency`
+group cancels superseded runs on hot PRs. ReadMe carries the status
+badge.
 
 ### Consolidate tool-specific CSS into `styles.css`
 `color-converter`, `counter`, and `hash-generator` each used to embed a
