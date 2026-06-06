@@ -26,16 +26,16 @@
                     <textarea id="case-input" class="coder-area" rows="6" placeholder="Type or paste your text here..."></textarea>
                 </div>
 
-                <div id="case-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                <div id="case-buttons" class="case-buttons">
                     <button data-case="camel">camelCase</button>
                     <button data-case="pascal">PascalCase</button>
                     <button data-case="snake">snake_case</button>
                     <button data-case="kebab">kebab-case</button>
                     <button data-case="constant">CONSTANT_CASE</button>
-                    <button data-case="upper" style="background-color: #6c757d;">UPPER CASE</button>
-                    <button data-case="lower" style="background-color: #6c757d;">lower case</button>
-                    <button data-case="sentence" style="background-color: #6c757d;">Sentence case</button>
-                    <button data-case="title" style="background-color: #6c757d;">Title Case</button>
+                    <button data-case="upper" class="btn-secondary">UPPER CASE</button>
+                    <button data-case="lower" class="btn-secondary">lower case</button>
+                    <button data-case="sentence" class="btn-secondary">Sentence case</button>
+                    <button data-case="title" class="btn-secondary">Title Case</button>
                 </div>
 
                 <div class="input-group">

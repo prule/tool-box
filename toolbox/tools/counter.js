@@ -27,35 +27,6 @@
                     <textarea id="counter-input" class="coder-area" rows="10" placeholder="Start typing..."></textarea>
                 </div>
 
-                <style>
-                    .stat-grid {
-                        display: grid;
-                        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-                        gap: 20px;
-                        margin-top: 20px;
-                    }
-                    .stat-box {
-                        background: #fff;
-                        border: 1px solid #ddd;
-                        border-radius: 8px;
-                        padding: 20px;
-                        text-align: center;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-                    }
-                    .stat-number {
-                        font-size: 2.5rem;
-                        font-weight: bold;
-                        color: #4a90e2;
-                        margin-bottom: 5px;
-                    }
-                    .stat-label {
-                        color: #666;
-                        font-size: 0.9rem;
-                        text-transform: uppercase;
-                        letter-spacing: 1px;
-                    }
-                </style>
-
                 <div class="stat-grid">
                     <div class="stat-box">
                         <div id="count-chars" class="stat-number">0</div>

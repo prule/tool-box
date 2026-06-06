@@ -22,33 +22,6 @@
                 </div>
                 <hr>
 
-                <style>
-                    .color-io-grid {
-                        display: grid;
-                        grid-template-columns: 150px 1fr;
-                        gap: 20px;
-                        align-items: center;
-                    }
-                    .color-picker-wrapper {
-                        width: 150px;
-                        height: 150px;
-                        border-radius: 8px;
-                        overflow: hidden;
-                        border: 1px solid #ddd;
-                    }
-                    #color-picker {
-                        width: 200%;
-                        height: 200%;
-                        transform: translate(-25%, -25%);
-                        cursor: pointer;
-                    }
-                    .color-values {
-                        display: grid;
-                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                        gap: 15px;
-                    }
-                </style>
-
                 <div class="color-io-grid">
                     <div class="color-picker-wrapper">
                         <input type="color" id="color-picker" value="#4a90e2">
