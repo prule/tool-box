@@ -1,5 +1,7 @@
 # Developer Toolbox
 
+[![tests](https://github.com/prule/tool-box/actions/workflows/test.yml/badge.svg)](https://github.com/prule/tool-box/actions/workflows/test.yml)
+
 A collection of essential developer tools available as a simple, static website. The project is designed to be lightweight, fast, and easily extensible.
 
 > All the tools use popular libraries rather than reimplementing the functionality.
