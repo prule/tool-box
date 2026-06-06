@@ -72,28 +72,29 @@
 
         init: function () {
             // Re-bind listeners when content is rendered
+            // showTool() replaces #tool-container.innerHTML before init()
+            // runs, so the old elements (and their listeners) are already
+            // gone by the time we wire these up — no stacking risk.
             const btn = document.getElementById('generate-uuid-btn');
             if (btn) {
-                // Ensure we remove old listener if any (though init is usually called on fresh render)
-                // Just add new one
-                btn.onclick = () => this.generate();
+                btn.addEventListener('click', () => this.generate());
             }
 
             const versionSelect = document.getElementById('uuid-version');
             if (versionSelect) {
-                versionSelect.onchange = () => this.toggleInputs();
+                versionSelect.addEventListener('change', () => this.toggleInputs());
             }
 
             const namespaceSelect = document.getElementById('uuid-namespace-select');
             if (namespaceSelect) {
-                namespaceSelect.onchange = () => {
+                namespaceSelect.addEventListener('change', () => {
                     const customInput = document.getElementById('uuid-namespace-custom');
                     if (namespaceSelect.value === 'custom') {
                         customInput.style.display = 'block';
                     } else {
                         customInput.style.display = 'none';
                     }
-                };
+                });
             }
         },
 

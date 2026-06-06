@@ -9,20 +9,25 @@ A running backlog of known issues and clean-ups. Per `CLAUDE.md`:
 
 ## Open
 
-### `.onclick = ...` vs `addEventListener`
-
-`app.js`, `uuid-generator.js`, and others assign listeners with
-`element.onclick = ...`. That's only one handler per event and clobbers
-anything attached previously. Migrating to `addEventListener` is a quiet
-correctness/style win; not blocking anything today.
-
-### `script.js` mentioned in some IDE configs but the file is gone
-
-Run configurations in `.idea/runConfigurations/` (now ignored) may
-reference the deleted `script.js`. Harmless, but if someone opens an old
-config, it will be broken.
+_Nothing currently in flight. Add new items here as you spot them._
 
 ## DONE
+
+### Migrate `.onclick` / `.onchange` to `addEventListener`
+
+`app.js` (sidebar links) and `uuid-generator.js` (generate button +
+version / namespace selects) used to assign listeners with
+`element.onclick = ...`, which only allows one handler per event and
+clobbers anything attached previously. All five sites now use
+`addEventListener`. Safe because `showTool()` replaces
+`#tool-container.innerHTML` before `init()` runs, so the old elements
+(and their listeners) are gone by the time we wire the new ones up —
+no stacking risk.
+
+### Stale IDE refs to deleted `script.js`
+
+Concern was speculative — a grep of the repo turned up zero
+references to `script.js` outside this changelog. Closing the item.
 
 ### Add ESLint + Prettier and wire into CI
 

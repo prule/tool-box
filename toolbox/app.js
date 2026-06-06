@@ -30,10 +30,10 @@ class ToolboxApp {
         const a = document.createElement('a');
         a.href = '#';
         a.textContent = 'Home';
-        a.onclick = (e) => {
+        a.addEventListener('click', (e) => {
             e.preventDefault();
             this.showHome();
-        };
+        });
         li.appendChild(a);
         this.toolListElement.appendChild(li);
     }
@@ -43,10 +43,10 @@ class ToolboxApp {
         const a = document.createElement('a');
         a.href = '#';
         a.textContent = tool.name;
-        a.onclick = (e) => {
+        a.addEventListener('click', (e) => {
             e.preventDefault();
             this.showTool(tool);
-        };
+        });
         li.appendChild(a);
         this.toolListElement.appendChild(li);
     }
