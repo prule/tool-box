@@ -1,5 +1,8 @@
 /**
- * Markdown Previewer Tool
+ * Markdown Previewer Tool (UI).
+ *
+ * Logic lives in toolbox/tools/markdown-previewer.logic.js
+ * (window.markdownPreviewerLogic). Tested in tests/markdown-previewer.test.js.
  */
 (function() {
     const markdownPreviewerTool = {
@@ -34,15 +37,17 @@
         init: function() {
             const input = document.getElementById('md-input');
             const preview = document.getElementById('md-preview');
-
-            if (typeof marked === 'undefined') {
-                preview.innerHTML = "Error: Marked.js library not loaded. Check internet connection.";
-                return;
-            }
+            const markedLib = typeof marked !== 'undefined' ? marked : null;
 
             const updatePreview = () => {
-                preview.innerHTML = marked.parse(input.value);
+                const r = window.markdownPreviewerLogic.render(input.value, markedLib);
+                preview.innerHTML = r.ok ? r.html : 'Error: ' + r.error;
             };
+
+            if (!markedLib) {
+                updatePreview();
+                return;
+            }
 
             input.addEventListener('input', updatePreview);
 
