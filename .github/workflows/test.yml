@@ -20,8 +20,10 @@ jobs:
             fail-fast: false
             matrix:
                 # Lower bound matches the engines requirement in package.json; upper
-                # bound is the current LTS.
-                node-version: ['20', '22']
+                # bound is the current LTS. Node 20 was dropped when this repo
+                # moved to pnpm: pnpm 11.18 requires Node >=22.13, and Node 20
+                # reached end-of-life in April 2026.
+                node-version: ['22', '24']
         steps:
             - uses: actions/checkout@v4
 
