@@ -3,8 +3,10 @@
     "version": "0.1.0",
     "description": "A collection of essential developer tools available as a simple, static website.",
     "private": true,
+    "packageManager": "pnpm@11.18.0",
     "type": "module",
     "scripts": {
+        "preinstall": "npx only-allow pnpm",
         "test": "vitest run",
         "test:watch": "vitest",
         "lint": "eslint .",

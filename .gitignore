@@ -1,3 +1,15 @@
 node_modules/
 coverage/
 .DS_Store
+
+# Enforce pnpm: these must never be committed.
+package-lock.json
+yarn.lock
+npm-shrinkwrap.json
+
+# JetBrains IDE config — machine-local.
+.idea/*
+!.idea/codeStyles/
+!.idea/google-java-format.xml
+!.idea/ktfmt.xml
+# (the negations above keep deliberately-shared config tracked)
